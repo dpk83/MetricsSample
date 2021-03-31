@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsSample", "MetricsSample\MetricsSample.csproj", "{A9D238F9-0839-42BD-B97B-4625E34F64CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsSample", "MetricsSample\MetricsSample.csproj", "{A9D238F9-0839-42BD-B97B-4625E34F64CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsLibrary", "MetricsLibrary\MetricsLibrary.csproj", "{9EA234E5-4EEA-463A-AA96-A646A9F20C93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsLibrary", "MetricsLibrary\MetricsLibrary.csproj", "{9EA234E5-4EEA-463A-AA96-A646A9F20C93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsBench", "MetricsBench\MetricsBench.csproj", "{68788D06-1BC5-43D5-B4B6-483C5B76EE63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsBench", "MetricsBench\MetricsBench.csproj", "{68788D06-1BC5-43D5-B4B6-483C5B76EE63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
