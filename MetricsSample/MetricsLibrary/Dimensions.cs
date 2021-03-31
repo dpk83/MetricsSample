@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace MetricsLibrary
 {
+    public class TupleKeyComparer : IComparer<ValueTuple<string, string>>
+    {
+        public int Compare((string, string) x, (string, string) y)
+        {
+            return String.Compare(x.Item1, y.Item1, true /* ignoreCase */);
+        }
+    }
+
     public class Dimensions
     {
-        private const int HashSalt = 17;
         private ValueTuple<string, string>[] _array;
+        private StringBuilder _stringBuilder;
+        private bool _isDirty = true;
+        private string _valueHashStr = string.Empty;
 
-        public Dimensions(List<ValueTuple<string, string>> valueTuples)
-        {
-            _array = new (string, string)[valueTuples.Count];
-            
-            int index = 0;
-            foreach (var tuple in valueTuples)
-            {
-                _array[index++] = tuple;
-            }
-
-            // Sort array and use binary search to find an element
-            // Then use the strings to build the hashes instead of using HashCodes.
-
-            // Hash codes aren't unique and can't be used for our purpose
-            HashCode = GetHash();
-            KeysHashCode = GetKeysHash();
-        }
-
-
-        // If we want to avoid List, we can also take
+        // We can avoid List and instead have overloaded constructor
         // public Dimensions(ValueTuple<string, string> valueTuple1)
         // public Dimensions(ValueTuple<string, string> valueTuple1, ValueTuple<string, string> valueTuple2)
         // public Dimensions(ValueTuple<string, string> valueTuple1, ValueTuple<string, string> valueTuple2, ValueTuple<string, string> valueTuple3)
@@ -36,10 +28,69 @@ namespace MetricsLibrary
         // OR we can even break tuples down into
         // public Dimensions(key1, value1, key2, value2, key3, value3 ...)
 
-        // Make it private and expose the GetHashCode override instead?
-        public int HashCode { get; private set; }
+        // Constructor takes a list of tuples
+        public Dimensions(List<ValueTuple<string, string>> valueTuples)
+        {
+            _array = new (string, string)[valueTuples.Count];
 
-        public int KeysHashCode { get; private set; }
+            int index = 0;
+            int capacity = valueTuples.Count * 2;
+            foreach (var tuple in valueTuples)
+            {
+                _array[index++] = tuple;
+                capacity += tuple.Item1.Length + tuple.Item2.Length;
+            }
+
+            var tupleKeyComparer = new TupleKeyComparer();
+            Array.Sort(_array, tupleKeyComparer);
+
+            _stringBuilder = new StringBuilder(capacity);
+
+            // Calculate and update unique hashes for keys and values
+            foreach (var entry in _array)
+            {
+                _stringBuilder.Append(entry.Item1);
+                _stringBuilder.Append(":");
+            }
+
+            KeyHashStr = _stringBuilder.ToString();
+
+            // Reuse the string builder now for valueHash
+            UpdateValueHash();
+        }
+
+        public Dimensions(Dimensions sortedDimensions)
+        {
+            _array = new (string, string)[sortedDimensions.Count];
+            for (int i = 0; i < sortedDimensions.Count; i++)
+            {
+                _array[i] = sortedDimensions._array[i];
+            }
+
+            KeyHashStr = sortedDimensions.KeyHashStr;
+            _valueHashStr = sortedDimensions._valueHashStr;
+            _isDirty = sortedDimensions._isDirty;
+
+            _stringBuilder = new StringBuilder(sortedDimensions._stringBuilder.Capacity);
+        }
+
+        public string KeyHashStr { get; }
+
+        public string ValueHashStr
+        {
+            get 
+            {
+                if (_isDirty)
+                {
+                    // _isDirty flag is set, recalculate the hash string
+                    UpdateValueHash();
+
+                    _isDirty = false;
+                }
+
+                return _valueHashStr;
+            }
+        }
 
         public int Count => _array.Length;
 
@@ -65,14 +116,11 @@ namespace MetricsLibrary
                 {
                     if (key == _array[i].Item1)
                     {
-                        // Update the hash code 
-                        int hashCode = HashCode - getHashForElementAt(i);
-                        
                         // Assign the new value
                         _array[i].Item2 = value;
-                        
-                        // Update the hash code to include the new value 
-                        HashCode = hashCode + getHashForElementAt(i);
+
+                        // Mark it dirty so hash is re-calculated on next request
+                        _isDirty = true;
                         return;
                     }
                 }
@@ -95,37 +143,19 @@ namespace MetricsLibrary
             }
         }
 
-        private int GetKeysHash()
+        private void UpdateValueHash()
         {
-            int hashCode = 0;
-            for (int i = 0; i < _array.Length; i++)
+            _stringBuilder.Clear();
+            foreach (var entry in _array)
             {
-
-                var keyHashCode = _array[i].Item1.GetHashCode(StringComparison.OrdinalIgnoreCase);
-                hashCode = hashCode + (keyHashCode + HashSalt) * keyHashCode;
+                _stringBuilder.Append(entry.Item2);
+                _stringBuilder.Append(":");
             }
 
-            return hashCode;
-        }
-
-        private int GetHash()
-        {
-            int hashCode = 0;
-            for (int i = 0; i < _array.Length; i++)
-            {
-                hashCode = hashCode + getHashForElementAt(i);
-            }
-
-            return hashCode;
-        }
-
-        private int getHashForElementAt(int index)
-        {
-            var keyHashCode = _array[index].Item1.GetHashCode(StringComparison.OrdinalIgnoreCase);
-            var valueHashCode = _array[index].Item2.GetHashCode(StringComparison.OrdinalIgnoreCase);
-            return (keyHashCode + HashSalt) * (keyHashCode + valueHashCode);
-
-            // return index * (_array[index].Item1.GetHashCode(StringComparison.OrdinalIgnoreCase) + _array[index].Item2.GetHashCode(StringComparison.OrdinalIgnoreCase));
+            _valueHashStr = _stringBuilder.ToString();
+            
+            // Hash value is updated, reset isDirty flag
+            _isDirty = false;
         }
     }
 }

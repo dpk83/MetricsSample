@@ -1,36 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MetricsLibrary
 {
     public class CounterMetric
     {
-        Dimensions _dimensions;
+        private string _keyHashStr;
+        private string _valueHashStr;
 
         public CounterMetric(Dimensions dimensions)
         {
-            _dimensions = dimensions;
+            if (dimensions != null)
+            {
+                _keyHashStr = dimensions.KeyHashStr;
+                _valueHashStr = dimensions.ValueHashStr;
+            }
         }
 
-        public void AddCounter(int value, Dimensions dimensions)
+        public void Add(int value, Dimensions? dimensions)
         {
-            if (dimensions.KeysHashCode != _dimensions.KeysHashCode)
+            if (dimensions != null)
             {
-                throw new ArgumentException("keyset provided is different then the keys present for counter metrics");
+                if (dimensions.KeyHashStr != _keyHashStr)
+                {
+                    throw new ArgumentException("keyset provided is different then the keys present for counter metrics");
+                }
+
+                if (dimensions.ValueHashStr != _valueHashStr)
+                {
+                    _valueHashStr = dimensions.ValueHashStr;
+
+                    // Do any other necessary updates
+                }
             }
 
-            if (dimensions.HashCode == _dimensions.HashCode)
-            {
-                Add(value);
-            }
-            else
-            {
-                // Lookup the counter with the dimension in the dictionary
-                // if doesn't exists add it
-                // Call the Add method on that counter object
-            }
+            AddInternal(value);
         }
 
-        internal void Add(int value)
+        private void AddInternal(int value)
         {
             // Perform internal logic of incrementing the counter by the value
         }

@@ -29,13 +29,18 @@ namespace MetricsBench
                 new ("k5", "v5"),
             });
 
-        Dimensions changingDimensions = new Dimensions(new List<ValueTuple<string, string>>
+        Dimensions dimensions10D = new Dimensions(new List<ValueTuple<string, string>>
             {
-                new ("k1", "v1"),
-                new ("k2", "v2"),
-                new ("k3", "v3"),
-                new ("k4", "v4"),
-                new ("k5", "v5"),
+                new ("k11", "v11"),
+                new ("k12", "v21"),
+                new ("k13", "v31"),
+                new ("k14", "v41"),
+                new ("k15", "v51"),
+                new ("k16", "v11"),
+                new ("k17", "v21"),
+                new ("k18", "v31"),
+                new ("k19", "v41"),
+                new ("k20", "v51"),
             });
 
         Dimensions dimensions20D = new Dimensions(new List<ValueTuple<string, string>>
@@ -62,7 +67,8 @@ namespace MetricsBench
                 new ("k20", "v51"),
             });
 
-        CounterMetric counterMetric;
+        CounterMetric counterMetric5D;
+        CounterMetric counterMetric10D;
         CounterMetric counterMetric20D;
         static int value1 = 0;
         static int value2 = 0;
@@ -70,54 +76,89 @@ namespace MetricsBench
 
         public CounterBenchmark()
         {
-            counterMetric = new CounterMetric(dimensions);
+            counterMetric5D = new CounterMetric(dimensions);
+            counterMetric10D = new CounterMetric(dimensions10D);
             counterMetric20D = new CounterMetric(dimensions20D);
         }
 
-        //[IterationSetup]
-        //public void IterationSetup()
-        //{ value1 = 0; value2 = 0; index = 0; }
-
-        //[IterationCleanup]
-        //public void IterationCleanup()
-        //{ value1 = 0; value2 = 0; index = 0; }
-
         [Benchmark]
-        public void AddCounter_NoDimensionChanges()
+        public void Add_NullDimension()
         {
-            counterMetric.AddCounter(value1++, dimensions);
+            counterMetric5D.Add(value1++, null);
         }
 
         [Benchmark]
-        public void AddCounter_AlternateDimensionsBetweenCalls()
+        public void Add_NoDimensionChanges()
+        {
+            counterMetric5D.Add(value1++, dimensions);
+        }
+
+        [Benchmark]
+        public void Add_AlternateDimensionsBetweenCalls_5DCounter()
         {
             value2 = value2++;
-            counterMetric.AddCounter(value2, (value2 % 2 == 0) ? dimensions2 : dimensions);
+            counterMetric5D.Add(value2, (value2 % 2 == 0) ? dimensions2 : dimensions);
         }
 
         [Benchmark]
-        public void AddCounter_DifferentDimensionValuesInEachCall_SingleDimensionChange()
+        public void Add_Update1DimValueInEachCall_5DCounter()
         {
-            changingDimensions["k3"] = index++.ToString();
-            counterMetric.AddCounter(value2, changingDimensions);
+            dimensions["k3"] = index++.ToString();
+            counterMetric5D.Add(value2, dimensions);
         }
 
         [Benchmark]
-        public void AddCounter_DifferentDimensionValuesInEachCall_MultiDimensionChange()
+        public void Add_Update3DimValueInEachCall_5DCounter()
         {
-            changingDimensions["k3"] = index++.ToString();
-            changingDimensions["k5"] = index++.ToString();
-            changingDimensions["k2"] = index++.ToString();
-            counterMetric.AddCounter(value2, changingDimensions);
+            dimensions["k3"] = index++.ToString();
+            dimensions["k5"] = index++.ToString();
+            dimensions["k2"] = index++.ToString();
+            counterMetric5D.Add(value2, dimensions);
         }
 
         [Benchmark]
-        public void AddCounter_MultiDimensionChange_20D()
+        public void Add_Update3DimValueInEachCall_10DCounter()
         {
+            dimensions10D["k13"] = index++.ToString();
+            dimensions10D["k15"] = index++.ToString();
+            dimensions10D["k20"] = index++.ToString();
+            counterMetric10D.Add(value2, dimensions10D);
+        }
+
+        [Benchmark]
+        public void Add_Update5DimValueInEachCall_10DCounter()
+        {
+            dimensions10D["k11"] = index++.ToString();
+            dimensions10D["k13"] = index++.ToString();
+            dimensions10D["k16"] = index++.ToString();
+            dimensions10D["k15"] = index++.ToString();
+            dimensions10D["k20"] = index++.ToString();
+            counterMetric10D.Add(value2, dimensions10D);
+        }
+
+        [Benchmark]
+        public void Add_Update5DimValueInEachCall_20DCounter()
+        {
+            dimensions20D["k2"] = index++.ToString();
+            dimensions20D["k5"] = index++.ToString();
             dimensions20D["k13"] = index++.ToString();
             dimensions20D["k15"] = index++.ToString();
             dimensions20D["k20"] = index++.ToString();
-            counterMetric20D.AddCounter(value2, dimensions20D);
+            counterMetric20D.Add(value2, dimensions20D);
+        }
+
+        [Benchmark]
+        public void Add_NoDimensionChanges_NewDimensionObject()
+        {
+            Dimensions newDimensions = new Dimensions(new List<ValueTuple<string, string>>
+            {
+                new ("k1", "v1"),
+                new ("k2", "v2"),
+                new ("k3", "v3"),
+                new ("k4", "v4"),
+                new ("k5", "v5"),
+            });
+            counterMetric5D.Add(value1, newDimensions);
         }
     }
 }

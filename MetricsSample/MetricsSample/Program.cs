@@ -41,25 +41,25 @@ namespace MetricsSample
 
             Test1();
 
-            if (missing1Dim.HashCode != dimensions.HashCode)
+            if (missing1Dim.ValueHashStr != dimensions.ValueHashStr)
             {
                 Console.WriteLine("Stage 0 passed");
             }
 
-            if (sameDimensionDifferentOrder.HashCode == dimensions.HashCode)
+            if (sameDimensionDifferentOrder.ValueHashStr == dimensions.ValueHashStr)
             {
                 Console.WriteLine("Stage 1 passed");
             }
 
-            int originalHashCode = dimensions.HashCode;
-            int originalKeyHashCode = dimensions.KeysHashCode;
+            string originalHashCode = dimensions.ValueHashStr;
+            string originalKeyHashCode = dimensions.KeyHashStr;
             CounterMetric counterMetric = new CounterMetric(dimensions);
-            counterMetric.AddCounter(10, dimensions);
-            counterMetric.AddCounter(20, dimensions);
+            counterMetric.Add(10, dimensions);
+            counterMetric.Add(20, dimensions);
 
             try
             {
-                counterMetric.AddCounter(10, missing1Dim);
+                counterMetric.Add(10, missing1Dim);
                 Console.WriteLine("Stage 1.5 FAILED");
             }
             catch (ArgumentException e)
@@ -67,25 +67,25 @@ namespace MetricsSample
                 Console.WriteLine("Stage 1.5 passed");
             }
 
-            if (originalHashCode == dimensions.HashCode)
+            if (originalHashCode == dimensions.ValueHashStr)
             {
                 Console.WriteLine("Stage 2 passed");
             }
 
             dimensions["k4"] = "v5";
-            if (originalHashCode != dimensions.HashCode)
+            if (originalHashCode != dimensions.ValueHashStr)
             {
                 Console.WriteLine("Stage 3 passed");
             }
 
-            if (originalKeyHashCode == dimensions.KeysHashCode)
+            if (originalKeyHashCode == dimensions.KeyHashStr)
             {
                 Console.WriteLine("Stage 4 passed");
             }
 
-            counterMetric.AddCounter(5, dimensions);
+            counterMetric.Add(5, dimensions);
 
-            counterMetric.AddCounter(5, sameDimensionDifferentOrder);
+            counterMetric.Add(5, sameDimensionDifferentOrder);
 
             Console.WriteLine("Hello World!");
         }
