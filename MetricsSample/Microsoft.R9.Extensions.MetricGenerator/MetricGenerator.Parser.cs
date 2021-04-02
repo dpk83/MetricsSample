@@ -23,7 +23,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 _reportDiagnostic = reportDiagnostic;
             }
 
-            public IReadOnlyList<CounterClass> GetCounterClasses(IEnumerable<ClassDeclarationSyntax> classes)
+            public IReadOnlyList<MetricInstrumentClass> GetCounterClasses(IEnumerable<ClassDeclarationSyntax> classes)
             {
                 const string CounterAttribute = "Microsoft.R9.Extensions.MetricUtilities.Int64CounterMetricAttribute";
 
@@ -31,46 +31,45 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 if (counterAttribute is null)
                 {
                     // nothing to do if this type isn't available
-                    return Array.Empty<CounterClass>();
+                    return Array.Empty<MetricInstrumentClass>();
                 }
 
-                //var meterSymbol = _compilation.GetTypeByMetadataName("Microsoft.R9.Extensions.Meter.IMeter");
-                //if (meterSymbol == null)
-                //{
-                //    Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.Exception");
-                //    // nothing to do if this type isn't available
-                //    return Array.Empty<CounterClass>();
-                //}
+                var meterSymbol = _compilation.GetTypeByMetadataName("Microsoft.R9.Extensions.Meter.IMeter");
+                if (meterSymbol == null)
+                {
+                    Diag(DiagDescriptors.ErrorMissingRequiredType, null, "Microsoft.R9.Extensions.Meter.IMeter");
+                    return Array.Empty<MetricInstrumentClass>();
+                }
 
                 var exceptionSymbol = _compilation.GetTypeByMetadataName("System.Exception");
                 if (exceptionSymbol == null)
                 {
                     Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.Exception");
-                    return Array.Empty<CounterClass>();
+                    return Array.Empty<MetricInstrumentClass>();
                 }
 
                 var enumerableSymbol = _compilation.GetTypeByMetadataName("System.Collections.IEnumerable");
                 if (enumerableSymbol == null)
                 {
                     Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.Collections.IEnumerable");
-                    return Array.Empty<CounterClass>();
+                    return Array.Empty<MetricInstrumentClass>();
                 }
 
                 var stringSymbol = _compilation.GetTypeByMetadataName("System.String");
                 if (stringSymbol == null)
                 {
                     Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.String");
-                    return Array.Empty<CounterClass>();
+                    return Array.Empty<MetricInstrumentClass>();
                 }
 
                 var dateTimeSymbol = _compilation.GetTypeByMetadataName("System.DateTime");
                 if (dateTimeSymbol == null)
                 {
                     Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.DateTime");
-                    return Array.Empty<CounterClass>();
+                    return Array.Empty<MetricInstrumentClass>();
                 }
 
-                var results = new List<CounterClass>();
+                var results = new List<MetricInstrumentClass>();
                 var ids = new HashSet<int>();
 
 
@@ -82,7 +81,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                         // stop if we're asked to
                         _cancellationToken.ThrowIfCancellationRequested();
 
-                        CounterClass? counterClass = null;
+                        MetricInstrumentClass? metricInstrumentClass = null;
                         string nspace = string.Empty;
 
                         ids.Clear();
@@ -116,18 +115,18 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
                                     if (methodSymbol != null)
                                     {
-                                        var counterMethod = new CounterMethod
+                                        var metricInstrumentMethod = new MetricInstrumentMethod
                                         {
                                             Name = method.Identifier.ToString(),
                                             EventId = eventId,
                                             EventName = eventName,
                                             IsExtensionMethod = methodSymbol.IsExtensionMethod,
                                             Modifiers = method.Modifiers.ToString(),
-                                            Type = sm.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
+                                            InstrumentClassType = sm.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
                                         };
 
                                         bool keepMethod = true;
-                                        if (counterMethod.Name[0] == '_')
+                                        if (metricInstrumentMethod.Name[0] == '_')
                                         {
                                             // can't have logging method names that start with _ since that can lead to conflicting symbol names
                                             // because the generated symbols start with _
@@ -177,16 +176,16 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         }
 
                                         // ensure there are no duplicate ids.
-                                        if (ids.Contains(counterMethod.EventId))
+                                        if (ids.Contains(metricInstrumentMethod.EventId))
                                         {
-                                            Diag(DiagDescriptors.ErrorEventIdReuse, methodAttribute.GetLocation(), counterMethod.EventId);
+                                            Diag(DiagDescriptors.ErrorEventIdReuse, methodAttribute.GetLocation(), metricInstrumentMethod.EventId);
                                         }
                                         else
                                         {
-                                            _ = ids.Add(counterMethod.EventId);
+                                            _ = ids.Add(metricInstrumentMethod.EventId);
                                         }
 
-                                        //bool foundMeter = false;
+                                        bool foundMeter = false;
                                         foreach (var p in method.ParameterList.Parameters)
                                         {
                                             var paramName = p.Identifier.ToString();
@@ -209,15 +208,15 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             var declaredType = sm.GetDeclaredSymbol(p);
                                             var typeName = declaredType!.ToDisplayString();
 
-                                            var meterParameter = new MeterParameter
+                                            var meterParameter = new MetricInstrumentParameter
                                             {
                                                 Name = paramName,
                                                 Type = typeName,
-                                                // IsMeter = !foundMeter && IsBaseOrIdentity(paramSymbol!, meterSymbol),
+                                                IsMeter = !foundMeter && IsBaseOrIdentity(paramSymbol!, meterSymbol),
                                                 IsEnumerable = IsBaseOrIdentity(paramSymbol!, enumerableSymbol) && !IsBaseOrIdentity(paramSymbol!, stringSymbol),
                                             };
 
-                                            // foundMeter |= meterParameter.IsMeter;
+                                            foundMeter |= meterParameter.IsMeter;
 
                                             if (IsBaseOrIdentity(paramSymbol!, dateTimeSymbol))
                                             {
@@ -231,27 +230,23 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                 Diag(DiagDescriptors.ErrorInvalidParameterName, p.Identifier.GetLocation());
                                             }
 
-                                            counterMethod.AllParameters.Add(meterParameter);
+                                            metricInstrumentMethod.AllParameters.Add(meterParameter);
 
                                             if (meterParameter.IsRegular)
                                             {
-                                                counterMethod.RegularParameters.Add(meterParameter);
+                                                metricInstrumentMethod.RegularParameters.Add(meterParameter);
                                             }
 
-                                            //if (keepMethod)
-                                            //{
-                                            //    if (isStatic && !foundMeter)
-                                            //    {
-                                            //        Diag(DiagDescriptors.ErrorMissingLogger, method.GetLocation());
-                                            //        keepMethod = false;
-                                            //    }
-                                            //    else if (!isStatic && foundMeter)
-                                            //    {
-                                            //        Diag(DiagDescriptors.ErrorNotStaticMethod, method.GetLocation());
-                                            //    }
-                                            //}
+                                            if (keepMethod)
+                                            {
+                                                if (!foundMeter)
+                                                {
+                                                    Diag(DiagDescriptors.ErrorMissingLogger, method.GetLocation());
+                                                    keepMethod = false;
+                                                }
+                                            }
 
-                                            if (counterClass == null)
+                                            if (metricInstrumentClass == null)
                                             {
                                                 // determine the namespace the class is declared in, if any
                                                 var ns = classDef.Parent as NamespaceDeclarationSyntax;
@@ -282,14 +277,14 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
                                             if (keepMethod)
                                             {
-                                                counterClass ??= new CounterClass
+                                                metricInstrumentClass ??= new MetricInstrumentClass
                                                 {
                                                     Namespace = nspace,
                                                     Name = classDef.Identifier.ToString() + classDef.TypeParameterList,
                                                     Constraints = classDef.ConstraintClauses.ToString(),
                                                 };
 
-                                                counterClass.Methods.Add(counterMethod);
+                                                metricInstrumentClass.Methods.Add(metricInstrumentMethod);
                                                 keepMethod = false;
                                             }
                                         }
@@ -298,9 +293,9 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                             }
                         }
 
-                        if (counterClass != null)
+                        if (metricInstrumentClass != null)
                         {
-                            results.Add(counterClass);
+                            results.Add(metricInstrumentClass);
                         }
                     }
                 }
@@ -364,27 +359,27 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             }
         }
 
-        internal class CounterClass
+        internal class MetricInstrumentClass
         {
-            public readonly List<CounterMethod> Methods = new();
+            public readonly List<MetricInstrumentMethod> Methods = new();
             public string Namespace = string.Empty;
             public string Name = string.Empty;
             public string Constraints = string.Empty;
         }
 
-        internal class CounterMethod
+        internal class MetricInstrumentMethod
         {
-            public readonly List<MeterParameter> AllParameters = new();
-            public readonly List<MeterParameter> RegularParameters = new();
+            public readonly List<MetricInstrumentParameter> AllParameters = new();
+            public readonly List<MetricInstrumentParameter> RegularParameters = new();
             public string? Name;
             public int EventId;
             public string? EventName;
             public bool IsExtensionMethod;
             public string Modifiers = string.Empty;
-            public string Type = string.Empty;
+            public string InstrumentClassType = string.Empty;
         }
 
-        internal class MeterParameter
+        internal class MetricInstrumentParameter
         {
             public string Name = string.Empty;
             public string Type = string.Empty;
