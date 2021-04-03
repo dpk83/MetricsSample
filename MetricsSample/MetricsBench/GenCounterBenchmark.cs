@@ -29,10 +29,6 @@ namespace MetricsBench
             _counter10D = Metric.Create10dCounter(_meter, "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10");
         }
 
-        //[IterationSetup]
-        //public void IterationSetup()
-        //{ val = index++.ToString(); }
-
         [Benchmark]
         public void Add_NullDimension()
         {
@@ -45,15 +41,6 @@ namespace MetricsBench
         {
             value1++;
             _counter5D.Add(value1);
-        }
-
-        [Benchmark]
-        public void Add_AlternateDimensionsBetweenCalls_5DCounter()
-        {
-            index++;
-            value2++;
-            _counter5D.k2 = index.ToString();
-            _counter5D.Add(value2);
         }
 
         [Benchmark]
@@ -99,6 +86,25 @@ namespace MetricsBench
             _counter10D.k2 = val;
             _counter10D.k9 = val;
             _counter10D.k7 = val;
+
+            _counter10D.Add(value2);
+        }
+
+        [Benchmark]
+        public void Add_Update10DimValueInEachCall_10DCounter()
+        {
+            value2++;
+            string val = index++.ToString();
+            _counter10D.k3 = val;
+            _counter10D.k5 = val;
+            _counter10D.k2 = val;
+            _counter10D.k9 = val;
+            _counter10D.k7 = val;
+            _counter10D.k1 = val;
+            _counter10D.k4 = val;
+            _counter10D.k6 = val;
+            _counter10D.k8 = val;
+            _counter10D.k10 = val;
 
             _counter10D.Add(value2);
         }

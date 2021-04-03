@@ -41,42 +41,13 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                     return Array.Empty<MetricInstrumentClass>();
                 }
 
-                var exceptionSymbol = _compilation.GetTypeByMetadataName("System.Exception");
-                if (exceptionSymbol == null)
-                {
-                    Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.Exception");
-                    return Array.Empty<MetricInstrumentClass>();
-                }
-
-                var enumerableSymbol = _compilation.GetTypeByMetadataName("System.Collections.IEnumerable");
-                if (enumerableSymbol == null)
-                {
-                    Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.Collections.IEnumerable");
-                    return Array.Empty<MetricInstrumentClass>();
-                }
-
-                var stringSymbol = _compilation.GetTypeByMetadataName("System.String");
-                if (stringSymbol == null)
-                {
-                    Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.String");
-                    return Array.Empty<MetricInstrumentClass>();
-                }
-
-                var dateTimeSymbol = _compilation.GetTypeByMetadataName("System.DateTime");
-                if (dateTimeSymbol == null)
-                {
-                    Diag(DiagDescriptors.ErrorMissingRequiredType, null, "System.DateTime");
-                    return Array.Empty<MetricInstrumentClass>();
-                }
-
                 var results = new List<MetricInstrumentClass>();
                 var metricNames = new HashSet<string>();
 
-
-                foreach (var group in classes.GroupBy(x => x.SyntaxTree))
+                foreach (var classDeclarationGroup in classes.GroupBy(x => x.SyntaxTree))
                 {
-                    SemanticModel? sm = null;
-                    foreach (var classDef in group)
+                    SemanticModel? semanticModel = null;
+                    foreach (var classDeclaration in classDeclarationGroup)
                     {
                         // stop if we're asked to
                         _cancellationToken.ThrowIfCancellationRequested();
@@ -86,7 +57,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
                         metricNames.Clear();
 
-                        foreach (var member in classDef.Members)
+                        foreach (var member in classDeclaration.Members)
                         {
                             var method = member as MethodDeclarationSyntax;
                             if (method == null)
@@ -99,9 +70,9 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                             {
                                 foreach (var methodAttribute in methodAttributeList.Attributes)
                                 {
-                                    sm ??= _compilation.GetSemanticModel(classDef.SyntaxTree);
+                                    semanticModel ??= _compilation.GetSemanticModel(classDeclaration.SyntaxTree);
 
-                                    var methodAttributeSymbol = sm.GetSymbolInfo(methodAttribute, _cancellationToken).Symbol as IMethodSymbol;
+                                    var methodAttributeSymbol = semanticModel.GetSymbolInfo(methodAttribute, _cancellationToken).Symbol as IMethodSymbol;
                                     if (methodAttributeSymbol == null ||
                                         !counterAttribute.Equals(methodAttributeSymbol.ContainingType, SymbolEqualityComparer.Default))
                                     {
@@ -109,8 +80,8 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         continue;
                                     }
 
-                                    var metricName = ExtractAttributeValues(methodAttribute.ArgumentList!, sm);
-                                    var methodSymbol = sm.GetDeclaredSymbol(method, _cancellationToken);
+                                    var metricName = ExtractMetricName(methodAttribute.ArgumentList!, semanticModel);
+                                    var methodSymbol = semanticModel.GetDeclaredSymbol(method, _cancellationToken);
 
                                     if (methodSymbol != null)
                                     {
@@ -120,7 +91,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             MetricName = metricName,
                                             IsExtensionMethod = methodSymbol.IsExtensionMethod,
                                             Modifiers = method.Modifiers.ToString(),
-                                            InstrumentClassType = sm.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
+                                            InstrumentClassType = semanticModel.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
                                         };
 
                                         bool keepMethod = true;
@@ -129,11 +100,12 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             // can't have logging method names that start with _ since that can lead to conflicting symbol names
                                             // because the generated symbols start with _
                                             Diag(DiagDescriptors.ErrorInvalidMethodName, method.Identifier.GetLocation());
+                                            keepMethod = false;
                                         }
 
-                                        if (sm.GetTypeInfo(method.ReturnType!).Type!.SpecialType != SpecialType.None) //!= SpecialType.System_Void)
+                                        if (semanticModel.GetTypeInfo(method.ReturnType!).Type!.SpecialType != SpecialType.None) //!= SpecialType.System_Void)
                                         {
-                                            // Make sure return type is an object type
+                                            // Make sure return type is not from existing none type
                                             Diag(DiagDescriptors.ErrorInvalidMethodReturnType, method.ReturnType.GetLocation());
                                             keepMethod = false;
                                         }
@@ -178,7 +150,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         if (string.IsNullOrWhiteSpace(metricInstrumentMethod.MetricName) ||
                                             metricNames.Contains(metricInstrumentMethod.MetricName!))
                                         {
-                                            Diag(DiagDescriptors.ErrorEventIdReuse, methodAttribute.GetLocation(), metricInstrumentMethod.MetricName);
+                                            Diag(DiagDescriptors.ErrorMetricNameReuse, methodAttribute.GetLocation(), metricInstrumentMethod.MetricName);
                                         }
                                         else
                                         {
@@ -187,9 +159,9 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 #pragma warning restore CS8604 // Possible null reference argument.
 
                                         bool foundMeter = false;
-                                        foreach (var p in method.ParameterList.Parameters)
+                                        foreach (var parameter in method.ParameterList.Parameters)
                                         {
-                                            var paramName = p.Identifier.ToString();
+                                            var paramName = parameter.Identifier.ToString();
                                             if (string.IsNullOrWhiteSpace(paramName))
                                             {
                                                 // semantic problem, just bail quietly
@@ -197,7 +169,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                 break;
                                             }
 
-                                            var declSymbol = sm.GetDeclaredSymbol(p);
+                                            var declSymbol = semanticModel.GetDeclaredSymbol(parameter);
                                             var paramSymbol = declSymbol!.Type;
                                             if (paramSymbol is IErrorTypeSymbol)
                                             {
@@ -206,7 +178,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                 break;
                                             }
 
-                                            var declaredType = sm.GetDeclaredSymbol(p);
+                                            var declaredType = semanticModel.GetDeclaredSymbol(parameter);
                                             var typeName = declaredType!.ToDisplayString();
 
                                             var meterParameter = new MetricInstrumentParameter
@@ -214,21 +186,15 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                 Name = paramName,
                                                 Type = typeName,
                                                 IsMeter = !foundMeter && IsBaseOrIdentity(paramSymbol!, meterSymbol),
-                                                IsEnumerable = IsBaseOrIdentity(paramSymbol!, enumerableSymbol) && !IsBaseOrIdentity(paramSymbol!, stringSymbol),
                                             };
 
                                             foundMeter |= meterParameter.IsMeter;
 
-                                            if (IsBaseOrIdentity(paramSymbol!, dateTimeSymbol))
-                                            {
-                                                Diag(DiagDescriptors.PassingDateTime, p.Identifier.GetLocation());
-                                            }
-
                                             if (meterParameter.Name[0] == '_')
                                             {
-                                                // can't have logging method parameter names that start with _ since that can lead to conflicting symbol names
+                                                // can't have method parameter names that start with _ since that can lead to conflicting symbol names
                                                 // because all generated symbols start with _
-                                                Diag(DiagDescriptors.ErrorInvalidParameterName, p.Identifier.GetLocation());
+                                                Diag(DiagDescriptors.ErrorInvalidParameterName, parameter.Identifier.GetLocation());
                                             }
 
                                             metricInstrumentMethod.AllParameters.Add(meterParameter);
@@ -242,7 +208,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             {
                                                 if (!foundMeter)
                                                 {
-                                                    Diag(DiagDescriptors.ErrorMissingLogger, method.GetLocation());
+                                                    Diag(DiagDescriptors.ErrorMissingMeter, method.GetLocation());
                                                     keepMethod = false;
                                                 }
                                             }
@@ -250,13 +216,13 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             if (metricInstrumentClass == null)
                                             {
                                                 // determine the namespace the class is declared in, if any
-                                                var ns = classDef.Parent as NamespaceDeclarationSyntax;
+                                                var ns = classDeclaration.Parent as NamespaceDeclarationSyntax;
                                                 if (ns == null)
                                                 {
-                                                    if (classDef.Parent is not CompilationUnitSyntax)
+                                                    if (classDeclaration.Parent is not CompilationUnitSyntax)
                                                     {
                                                         // since this generator doesn't know how to generate a nested type...
-                                                        Diag(DiagDescriptors.ErrorNestedType, classDef.Identifier.GetLocation());
+                                                        Diag(DiagDescriptors.ErrorNestedType, classDeclaration.Identifier.GetLocation());
                                                         keepMethod = false;
                                                     }
                                                 }
@@ -281,8 +247,8 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                 metricInstrumentClass ??= new MetricInstrumentClass
                                                 {
                                                     Namespace = nspace,
-                                                    Name = classDef.Identifier.ToString() + classDef.TypeParameterList,
-                                                    Constraints = classDef.ConstraintClauses.ToString(),
+                                                    Name = classDeclaration.Identifier.ToString() + classDeclaration.TypeParameterList,
+                                                    Constraints = classDeclaration.ConstraintClauses.ToString(),
                                                 };
 
                                                 metricInstrumentClass.Methods.Add(metricInstrumentMethod);
@@ -311,44 +277,14 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 return conversion.IsIdentity || (conversion.IsReference && conversion.IsImplicit);
             }
 
-            private string? ExtractAttributeValues(AttributeArgumentListSyntax args, SemanticModel sm)
+            private string? ExtractMetricName(AttributeArgumentListSyntax args, SemanticModel sm)
             {
                 string? metricName = null;
-                int numPositional = 0;
-
-                foreach (var arg in args.Arguments)
+                if (args.Arguments.Count > 0)
                 {
-                    if (arg.NameEquals != null)
-                    {
-                        switch (arg.NameEquals.Name.ToString())
-                        {
-                            case "MetricName":
-                                metricName = sm.GetConstantValue(arg.Expression, _cancellationToken).ToString();
-                                break;
-                        }
-                    }
-                    else if (arg.NameColon != null)
-                    {
-                        switch (arg.NameColon.Name.ToString())
-                        {
-                            case "MetricName":
-                                metricName = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (numPositional)
-                        {
-                            case 0:
-                                metricName = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
-                                break;
-                        }
-
-                        numPositional++;
-                    }
+                    var arg = args.Arguments[0];
+                    metricName = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
                 }
-
                 return metricName;
             }
 
@@ -382,7 +318,6 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             public string Name = string.Empty;
             public string Type = string.Empty;
             public bool IsMeter = false;
-            public bool IsEnumerable;
             public bool IsRegular => !IsMeter;
         }
     }

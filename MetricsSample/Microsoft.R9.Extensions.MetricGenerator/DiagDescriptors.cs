@@ -5,154 +5,82 @@ namespace Microsoft.R9.Extensions.MetricGenerator
     internal static class DiagDescriptors
     {
         public static DiagnosticDescriptor ErrorInvalidMethodName { get; } = new(
-            id: "LG0000",
+            id: "MG0000",
             title: Resources.ErrorInvalidMethodNameTitle,
             messageFormat: Resources.ErrorInvalidMethodNameMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor DontMentionLogLevelInMessage { get; } = new(
-            id: "LG0001",
-            title: Resources.DontMentionLogLevelInMessageTitle,
-            messageFormat: Resources.DontMentionLogLevelInMessageMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorInvalidParameterName { get; } = new(
-            id: "LG0002",
+            id: "MG0001",
             title: Resources.ErrorInvalidParameterNameTitle,
             messageFormat: Resources.ErrorInvalidParameterNameMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorNestedType { get; } = new(
-            id: "LG0003",
+            id: "MG0002",
             title: Resources.ErrorNestedTypeTitle,
             messageFormat: Resources.ErrorNestedTypeMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMissingRequiredType { get; } = new(
-            id: "LG0004",
+            id: "MG0003",
             title: Resources.ErrorMissingRequiredTypeTitle,
             messageFormat: Resources.ErrorMissingRequiredTypeMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorEventIdReuse { get; } = new(
-            id: "LG0005",
-            title: Resources.ErrorEventIdReuseTitle,
-            messageFormat: Resources.ErrorEventIdReuseMessage,
-            category: "LoggingGenerator",
+        public static DiagnosticDescriptor ErrorMetricNameReuse { get; } = new(
+            id: "MG0004",
+            title: Resources.ErrorMetricNameReuseTitle,
+            messageFormat: Resources.ErrorMetricNameReuseMessage,
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorInvalidMethodReturnType { get; } = new(
-            id: "LG0006",
+            id: "MG0005",
             title: Resources.ErrorInvalidMethodReturnTypeTitle,
             messageFormat: Resources.ErrorInvalidMethodReturnTypeMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMissingLogger { get; } = new(
-            id: "LG0007",
-            title: Resources.ErrorMissingLoggerTitle,
-            messageFormat: Resources.ErrorMissingLoggerMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor ErrorNotStaticMethod { get; } = new(
-            id: "LG0008",
-            title: Resources.ErrorNotStaticMethodTitle,
-            messageFormat: Resources.ErrorNotStaticMethodMessage,
-            category: "LoggingGenerator",
+        public static DiagnosticDescriptor ErrorMissingMeter { get; } = new(
+            id: "MG0006",
+            title: Resources.ErrorMissingMeterTitle,
+            messageFormat: Resources.ErrorMissingMeterMessage,
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorNotPartialMethod { get; } = new(
-            id: "LG0009",
+            id: "MG0007",
             title: Resources.ErrorNotPartialMethodTitle,
             messageFormat: Resources.ErrorNotPartialMethodMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMethodIsGeneric { get; } = new(
-            id: "LG0010",
+            id: "MG0008",
             title: Resources.ErrorMethodIsGenericTitle,
             messageFormat: Resources.ErrorMethodIsGenericMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor RedundantQualifierInMessage { get; } = new(
-            id: "LG0011",
-            title: Resources.RedundantQualifierInMessageTitle,
-            messageFormat: Resources.RedundantQualifierInMessageMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Warning,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor PassingDateTime { get; } = new(
-            id: "LG0012",
-            title: Resources.PassingDateTimeTitle,
-            messageFormat: Resources.PassingDateTimeMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Warning,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor DontMentionExceptionInMessage { get; } = new(
-            id: "LG0013",
-            title: Resources.DontMentionExceptionInMessageTitle,
-            messageFormat: Resources.DontMentionExceptionInMessageMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Warning,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor TemplateHasNoCorrespondingArgument { get; } = new(
-            id: "LG0014",
-            title: Resources.TemplateHasNoCorrespondingArgumentTitle,
-            messageFormat: Resources.TemplateHasNoCorrespondingArgumentMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor ArgumentHasNoCorrespondingTemplate { get; } = new(
-            id: "LG0015",
-            title: Resources.ArgumentHasNoCorrespondingTemplateTitle,
-            messageFormat: Resources.ArgumentHasNoCorrespondingTemplateMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMethodHasBody { get; } = new(
-            id: "LG0016",
+            id: "MG0009",
             title: Resources.ErrorMethodHasBodyTitle,
             messageFormat: Resources.ErrorMethodHasBodyMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor ErrorMissingLogLevel { get; } = new(
-            id: "LG0017",
-            title: Resources.ErrorMissingLogLevelTitle,
-            messageFormat: Resources.ErrorMissingLogLevelMessage,
-            category: "LoggingGenerator",
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-        public static DiagnosticDescriptor DontMentionLoggerInMessage { get; } = new(
-            id: "LG0018",
-            title: Resources.DontMentionLoggerInMessageTitle,
-            messageFormat: Resources.DontMentionLoggerInMessageMessage,
-            category: "LoggingGenerator",
+            category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
     }

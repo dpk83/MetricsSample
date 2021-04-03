@@ -21,8 +21,8 @@ namespace MetricsBench
         {
             var dontRequireSlnToRunBenchmarks = ManualConfig
                 .Create(DefaultConfig.Instance)
-                //.AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance));
-                // .AddJob(Job.VeryLongRun.WithToolchain(InProcessEmitToolchain.DontLogOutput));
+                // .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance));
+                // .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.DontLogOutput));
                 .AddJob(Job.Default.WithRuntime(CoreRuntime.Core50));
 
             BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, dontRequireSlnToRunBenchmarks);

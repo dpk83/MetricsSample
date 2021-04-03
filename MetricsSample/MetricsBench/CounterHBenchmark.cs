@@ -1,6 +1,8 @@
 ﻿
 using BenchmarkDotNet.Attributes;
 using MetricsLibrary;
+using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
+using Microsoft.R9.Extensions.Meter.Geneva;
 using System;
 using System.Collections.Generic;
 
@@ -21,27 +23,18 @@ namespace MetricsBench
                 new ("k5", "v5"),
             });
 
-        HDimensions dimensions2 = new HDimensions(new List<ValueTuple<string, string>>
+        HDimensions dimensions10D = new HDimensions(new List<ValueTuple<string, string>>
             {
                 new ("k1", "v1"),
                 new ("k2", "v2"),
-                new ("k3", "v31"),
-                new ("k4", "v41"),
+                new ("k3", "v3"),
+                new ("k4", "v4"),
                 new ("k5", "v5"),
-            });
-
-        HDimensions dimensions10D = new HDimensions(new List<ValueTuple<string, string>>
-            {
-                new ("k11", "v11"),
-                new ("k12", "v21"),
-                new ("k13", "v31"),
-                new ("k14", "v41"),
-                new ("k15", "v51"),
-                new ("k16", "v11"),
-                new ("k17", "v21"),
-                new ("k18", "v31"),
-                new ("k19", "v41"),
-                new ("k20", "v51"),
+                new ("k6", "v1"),
+                new ("k7", "v2"),
+                new ("k8", "v3"),
+                new ("k9", "v4"),
+                new ("k10", "v5"),
             });
 
         HDimensions dimensions20D = new HDimensions(new List<ValueTuple<string, string>>
@@ -68,18 +61,34 @@ namespace MetricsBench
                 new ("k20", "v51"),
             });
 
-        CounterMetricH counterMetric5D;
-        CounterMetricH counterMetric10D;
-        CounterMetricH counterMetric20D;
+        private GenevaMeter _meter;
+        CounterMetricH<DimensionValues5D> counterMetric5D;
+        CounterMetricH<DimensionValues10D> counterMetric10D;
         static int value1 = 0;
         static int value2 = 0;
         static ulong index = 0;
 
         public CounterHBenchmark()
         {
-            counterMetric5D = new CounterMetricH(dimensions);
-            counterMetric10D = new CounterMetricH(dimensions10D);
-            counterMetric20D = new CounterMetricH(dimensions20D);
+            _meter = new GenevaMeter("testMeter", new MdmMetricFactory(), "testMonitoringAccount");
+
+            var meterOptions = _meter.MeterOptions;
+            var cumulativeMetric5D = meterOptions.MdmMetricFactory.CreateUInt64CumulativeMetric(
+                                        MdmMetricFlags.CumulativeMetricDefault,
+                                        meterOptions.MonitoringAccount,
+                                        meterOptions.MetricNamespace,
+                                        "counter5D",
+                                        "k1", "k2", "k3", "k4", "k5");
+
+            var cumulativeMetric10D = meterOptions.MdmMetricFactory.CreateUInt64CumulativeMetric(
+                                        MdmMetricFlags.CumulativeMetricDefault,
+                                        meterOptions.MonitoringAccount,
+                                        meterOptions.MetricNamespace,
+                                        "counter5D",
+                                        "k1", "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9", "k10");
+
+            counterMetric5D = new CounterMetricH<DimensionValues5D>(cumulativeMetric5D, dimensions);
+            counterMetric10D = new CounterMetricH<DimensionValues10D>(cumulativeMetric10D, dimensions10D);
         }
 
         [Benchmark]
@@ -95,71 +104,65 @@ namespace MetricsBench
         }
 
         [Benchmark]
-        public void Add_AlternateUnsortedDimensionsBetweenCalls_5DCounter()
-        {
-            value2 = value2++;
-            counterMetric5D.Add(value2, (value2 % 2 == 0) ? dimensions2 : dimensions);
-        }
-
-        [Benchmark]
         public void Add_Update1DimValueInEachCall_5DCounter()
         {
-            dimensions["k3"] = index++.ToString();
+            value2++;
+            string val = index++.ToString();
+            dimensions["k3"] = val;
             counterMetric5D.Add(value2, dimensions);
         }
 
         [Benchmark]
         public void Add_Update3DimValueInEachCall_5DCounter()
         {
-            dimensions["k3"] = index++.ToString();
-            dimensions["k5"] = index++.ToString();
-            dimensions["k2"] = index++.ToString();
+            value2++;
+            string val = index++.ToString();
+            dimensions["k3"] = val;
+            dimensions["k5"] = val;
+            dimensions["k2"] = val;
             counterMetric5D.Add(value2, dimensions);
         }
 
         [Benchmark]
         public void Add_Update3DimValueInEachCall_10DCounter()
         {
-            dimensions10D["k13"] = index++.ToString();
-            dimensions10D["k15"] = index++.ToString();
-            dimensions10D["k20"] = index++.ToString();
+            value2++;
+            string val = index++.ToString();
+            dimensions10D["k3"] = val;
+            dimensions10D["k5"] = val;
+            dimensions10D["k10"] = val;
             counterMetric10D.Add(value2, dimensions10D);
         }
 
         [Benchmark]
         public void Add_Update5DimValueInEachCall_10DCounter()
         {
-            dimensions10D["k11"] = index++.ToString();
-            dimensions10D["k13"] = index++.ToString();
-            dimensions10D["k16"] = index++.ToString();
-            dimensions10D["k15"] = index++.ToString();
-            dimensions10D["k20"] = index++.ToString();
+            value2++;
+            string val = index++.ToString();
+            dimensions10D["k1"] = val;
+            dimensions10D["k3"] = val;
+            dimensions10D["k6"] = val;
+            dimensions10D["k5"] = val;
+            dimensions10D["k10"] = val;
             counterMetric10D.Add(value2, dimensions10D);
         }
 
         [Benchmark]
-        public void Add_Update5DimValueInEachCall_20DCounter()
+        public void Add_Update10DimValueInEachCall_10DCounter()
         {
-            dimensions20D["k2"] = index++.ToString();
-            dimensions20D["k5"] = index++.ToString();
-            dimensions20D["k13"] = index++.ToString();
-            dimensions20D["k15"] = index++.ToString();
-            dimensions20D["k20"] = index++.ToString();
-            counterMetric20D.Add(value2, dimensions20D);
-        }
-
-        [Benchmark]
-        public void Add_NoDimensionChanges_NewDimensionObject()
-        {
-            HDimensions newUnsortedDimensions = new HDimensions(new List<ValueTuple<string, string>>
-            {
-                new ("k1", "v1"),
-                new ("k2", "v2"),
-                new ("k3", "v3"),
-                new ("k4", "v4"),
-                new ("k5", "v5"),
-            });
-            counterMetric5D.Add(value1, newUnsortedDimensions);
+            value2++;
+            string val = index++.ToString();
+            dimensions10D["k1"] = val;
+            dimensions10D["k3"] = val;
+            dimensions10D["k6"] = val;
+            dimensions10D["k5"] = val;
+            dimensions10D["k10"] = val;
+            dimensions10D["k2"] = val;
+            dimensions10D["k4"] = val;
+            dimensions10D["k7"] = val;
+            dimensions10D["k8"] = val;
+            dimensions10D["k9"] = val;
+            counterMetric10D.Add(value2, dimensions10D);
         }
     }
 }

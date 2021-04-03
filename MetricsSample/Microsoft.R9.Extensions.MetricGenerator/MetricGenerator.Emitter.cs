@@ -386,16 +386,13 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 {{
                     if (_isDirty)
                     {{
-                        // _defaultDimensionValues = DimensionValues.Create({sb});
+                        _defaultDimensionValues = DimensionValues.Create({sb});
                         _isDirty = false;
                     }}
 
-                    //_ = value > 0
-                    //    ? CumulativeMetric.IncrementBy((ulong)value, _defaultDimensionValues)
-                    //    : CumulativeMetric.DecrementBy((ulong)value, _defaultDimensionValues);
-
-                     //var data = CumulativeMetric.GetData(_defaultDimensionValues);
-                     //Console.WriteLine($""AddMethod: value:{{data.Value}}: value:{{data.Sum}} min:{{data.Min}} max:{{data.Max}}"");
+                    _ = value > 0
+                        ? CumulativeMetric.IncrementBy((ulong)value, _defaultDimensionValues)
+                        : CumulativeMetric.DecrementBy((ulong)value, _defaultDimensionValues);
                 }}
             }}
             ";
