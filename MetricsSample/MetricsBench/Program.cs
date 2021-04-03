@@ -10,6 +10,10 @@ namespace MetricsBench
     {
         static void Main(string[] args)
         {
+            // Test1();
+
+            // Test2();
+
             RunBenchmark(args);
         }
 
@@ -17,9 +21,23 @@ namespace MetricsBench
         {
             var dontRequireSlnToRunBenchmarks = ManualConfig
                 .Create(DefaultConfig.Instance)
-                .AddJob(Job.Default.WithRuntime(CoreRuntime.Core50));
+                //.AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance));
+                .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.DontLogOutput));
+                // .AddJob(Job.Default.WithRuntime(CoreRuntime.Core50));
 
             BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, dontRequireSlnToRunBenchmarks);
+        }
+
+        static void Test1()
+        {
+            var c = new CounterBenchmark();
+            c.Add_NullDimension();
+        }
+
+        static void Test2()
+        {
+            var c = new OldCounterBenchmark();
+            c.Add_NullDimension();
         }
     }
 }

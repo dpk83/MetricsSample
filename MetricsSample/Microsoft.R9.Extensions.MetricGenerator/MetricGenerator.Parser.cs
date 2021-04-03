@@ -70,7 +70,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 }
 
                 var results = new List<MetricInstrumentClass>();
-                var ids = new HashSet<int>();
+                var metricNames = new HashSet<string>();
 
 
                 foreach (var group in classes.GroupBy(x => x.SyntaxTree))
@@ -84,7 +84,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                         MetricInstrumentClass? metricInstrumentClass = null;
                         string nspace = string.Empty;
 
-                        ids.Clear();
+                        metricNames.Clear();
 
                         foreach (var member in classDef.Members)
                         {
@@ -109,8 +109,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         continue;
                                     }
 
-                                    var (eventId, eventName) = ExtractAttributeValues(methodAttribute.ArgumentList!, sm);
-
+                                    var metricName = ExtractAttributeValues(methodAttribute.ArgumentList!, sm);
                                     var methodSymbol = sm.GetDeclaredSymbol(method, _cancellationToken);
 
                                     if (methodSymbol != null)
@@ -118,8 +117,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         var metricInstrumentMethod = new MetricInstrumentMethod
                                         {
                                             Name = method.Identifier.ToString(),
-                                            EventId = eventId,
-                                            EventName = eventName,
+                                            MetricName = metricName,
                                             IsExtensionMethod = methodSymbol.IsExtensionMethod,
                                             Modifiers = method.Modifiers.ToString(),
                                             InstrumentClassType = sm.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
@@ -175,15 +173,18 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             keepMethod = false;
                                         }
 
+#pragma warning disable CS8604 // Possible null reference argument.
                                         // ensure there are no duplicate ids.
-                                        if (ids.Contains(metricInstrumentMethod.EventId))
+                                        if (string.IsNullOrWhiteSpace(metricInstrumentMethod.MetricName) ||
+                                            metricNames.Contains(metricInstrumentMethod.MetricName!))
                                         {
-                                            Diag(DiagDescriptors.ErrorEventIdReuse, methodAttribute.GetLocation(), metricInstrumentMethod.EventId);
+                                            Diag(DiagDescriptors.ErrorEventIdReuse, methodAttribute.GetLocation(), metricInstrumentMethod.MetricName);
                                         }
                                         else
                                         {
-                                            _ = ids.Add(metricInstrumentMethod.EventId);
+                                            _ = metricNames.Add(metricInstrumentMethod.MetricName);
                                         }
+#pragma warning restore CS8604 // Possible null reference argument.
 
                                         bool foundMeter = false;
                                         foreach (var p in method.ParameterList.Parameters)
@@ -310,10 +311,9 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 return conversion.IsIdentity || (conversion.IsReference && conversion.IsImplicit);
             }
 
-            private (int eventId, string? eventName) ExtractAttributeValues(AttributeArgumentListSyntax args, SemanticModel sm)
+            private string? ExtractAttributeValues(AttributeArgumentListSyntax args, SemanticModel sm)
             {
-                int eventId = 0;
-                string? eventName = null;
+                string? metricName = null;
                 int numPositional = 0;
 
                 foreach (var arg in args.Arguments)
@@ -322,8 +322,8 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                     {
                         switch (arg.NameEquals.Name.ToString())
                         {
-                            case "EventName":
-                                eventName = sm.GetConstantValue(arg.Expression, _cancellationToken).ToString();
+                            case "MetricName":
+                                metricName = sm.GetConstantValue(arg.Expression, _cancellationToken).ToString();
                                 break;
                         }
                     }
@@ -331,8 +331,8 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                     {
                         switch (arg.NameColon.Name.ToString())
                         {
-                            case "eventId":
-                                eventId = (int)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
+                            case "MetricName":
+                                metricName = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
                                 break;
                         }
                     }
@@ -340,9 +340,8 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                     {
                         switch (numPositional)
                         {
-                            // event id
                             case 0:
-                                eventId = (int)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
+                                metricName = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
                                 break;
                         }
 
@@ -350,7 +349,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                     }
                 }
 
-                return (eventId, eventName);
+                return metricName;
             }
 
             private void Diag(DiagnosticDescriptor desc, Location? location, params object?[]? messageArgs)
@@ -372,8 +371,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             public readonly List<MetricInstrumentParameter> AllParameters = new();
             public readonly List<MetricInstrumentParameter> RegularParameters = new();
             public string? Name;
-            public int EventId;
-            public string? EventName;
+            public string? MetricName;
             public bool IsExtensionMethod;
             public string Modifiers = string.Empty;
             public string InstrumentClassType = string.Empty;

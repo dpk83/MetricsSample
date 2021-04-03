@@ -31,9 +31,17 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             var emitter = new Emitter(false, "meter");
 
             var counterClasses = parser.GetCounterClasses(receiver.ClassDeclarations);
-            var result = emitter.Emit(counterClasses, context.CancellationToken);
+            // var result = emitter.Emit(counterClasses, context.CancellationToken);
+            // context.AddSource(nameof(MetricGenerator), SourceText.From(result, Encoding.UTF8));
 
-            context.AddSource(nameof(MetricGenerator), SourceText.From(result, Encoding.UTF8));
+            //var meterInterface = emitter.EmitMeterInterface(counterClasses, context.CancellationToken);
+            //context.AddSource("GeneratedMeterInterface", SourceText.From(meterInterface, Encoding.UTF8));
+
+            var genevaMeter = emitter.EmitGenevaMeter(counterClasses, context.CancellationToken);
+            context.AddSource("GeneratedGenevaMeter", SourceText.From(genevaMeter, Encoding.UTF8));
+
+            var metricInstruments = emitter.EmitMetricInstruments(counterClasses, context.CancellationToken);
+            context.AddSource(nameof(MetricGenerator), SourceText.From(metricInstruments, Encoding.UTF8));
         }
 
         [ExcludeFromCodeCoverage]

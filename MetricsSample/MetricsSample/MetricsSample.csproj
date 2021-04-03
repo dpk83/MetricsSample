@@ -1,12 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MetricsLibrary\MetricsLibrary.csproj" />
+    <ProjectReference Include="..\Microsoft.R9.Extensions.MetricUtilities\Microsoft.R9.Extensions.MetricUtilities.csproj" />
+    <ProjectReference Include="..\Microsoft.R9.Extensions.MetricGenerator\Microsoft.R9.Extensions.MetricGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Microsoft.R9.Extensions.Mocks\Microsoft.R9.Extensions.Mocks.csproj" />
   </ItemGroup>
 
 </Project>
