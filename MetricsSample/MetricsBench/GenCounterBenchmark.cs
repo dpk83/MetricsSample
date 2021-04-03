@@ -32,19 +32,22 @@ namespace MetricsBench
         [Benchmark]
         public void Add_NullDimension()
         {
-            _counter5D.Add(++value1);
+            value1++;
+            _counter5D.Add(value1);
         }
 
         [Benchmark]
         public void Add_NoDimensionChanges()
         {
-            _counter5D.Add(++value1);
+            value1++;
+            _counter5D.Add(value1);
         }
 
         [Benchmark]
         public void Add_AlternateDimensionsBetweenCalls_5DCounter()
         {
             index++;
+            value2++;
             _counter5D.k2 = index.ToString();
             _counter5D.Add(value2);
         }
@@ -53,6 +56,7 @@ namespace MetricsBench
         public void Add_Update1DimValueInEachCall_5DCounter()
         {
             index++;
+            value2++;
             _counter5D.k3 = index.ToString();
             _counter5D.Add(value2);
         }
@@ -60,6 +64,7 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update3DimValueInEachCall_5DCounter()
         {
+            value2++;
             _counter5D.k3 = index++.ToString();
             _counter5D.k5 = index++.ToString();
             _counter5D.k2 = index++.ToString();
@@ -70,6 +75,7 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update3DimValueInEachCall_10DCounter()
         {
+            value2++;
             _counter10D.k3 = index++.ToString();
             _counter10D.k5 = index++.ToString();
             _counter10D.k2 = index++.ToString();
@@ -80,6 +86,7 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update5DimValueInEachCall_10DCounter()
         {
+            value2++;
             _counter10D.k3 = index++.ToString();
             _counter10D.k5 = index++.ToString();
             _counter10D.k2 = index++.ToString();

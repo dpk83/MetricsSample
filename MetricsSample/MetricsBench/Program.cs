@@ -12,7 +12,7 @@ namespace MetricsBench
         {
             // Test1();
 
-            // Test2();
+             // Test2();
 
             RunBenchmark(args);
         }
@@ -36,8 +36,8 @@ namespace MetricsBench
 
         static void Test2()
         {
-            var c = new OldCounterBenchmark();
-            c.Add_NullDimension();
+            var c = new GenCounterBenchmark();
+            c.Add_AlternateDimensionsBetweenCalls_5DCounter();
         }
     }
 }
