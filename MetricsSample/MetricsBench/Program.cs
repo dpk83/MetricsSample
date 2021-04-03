@@ -22,8 +22,8 @@ namespace MetricsBench
             var dontRequireSlnToRunBenchmarks = ManualConfig
                 .Create(DefaultConfig.Instance)
                 //.AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance));
-                .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.DontLogOutput));
-                // .AddJob(Job.Default.WithRuntime(CoreRuntime.Core50));
+                // .AddJob(Job.VeryLongRun.WithToolchain(InProcessEmitToolchain.DontLogOutput));
+                .AddJob(Job.Default.WithRuntime(CoreRuntime.Core50));
 
             BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, dontRequireSlnToRunBenchmarks);
         }
@@ -37,7 +37,7 @@ namespace MetricsBench
         static void Test2()
         {
             var c = new GenCounterBenchmark();
-            c.Add_AlternateDimensionsBetweenCalls_5DCounter();
+            //c.Add_AlternateDimensionsBetweenCalls_5DCounter();
         }
     }
 }

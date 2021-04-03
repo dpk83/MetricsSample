@@ -39,7 +39,9 @@ namespace Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions
         { return new MdmMetricData<ulong>(); }
 
         public bool IncrementBy(ulong value, TDim dimensionValues)
-        { return true; }
+        {
+            //Console.WriteLine($"{value}::");
+            return true; }
     }
 
     public sealed class MdmMetricFactory : IMdmMetricFactory

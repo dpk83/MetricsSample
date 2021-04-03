@@ -28,7 +28,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             }
 
             var parser = new Parser(context.Compilation, context.ReportDiagnostic, context.CancellationToken);
-            var emitter = new Emitter(false, "meter");
+            var emitter = new Emitter();
 
             var counterClasses = parser.GetCounterClasses(receiver.ClassDeclarations);
             // var result = emitter.Emit(counterClasses, context.CancellationToken);

@@ -29,6 +29,10 @@ namespace MetricsBench
             _counter10D = Metric.Create10dCounter(_meter, "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10");
         }
 
+        //[IterationSetup]
+        //public void IterationSetup()
+        //{ val = index++.ToString(); }
+
         [Benchmark]
         public void Add_NullDimension()
         {
@@ -65,9 +69,10 @@ namespace MetricsBench
         public void Add_Update3DimValueInEachCall_5DCounter()
         {
             value2++;
-            _counter5D.k3 = index++.ToString();
-            _counter5D.k5 = index++.ToString();
-            _counter5D.k2 = index++.ToString();
+            string val = index++.ToString();
+            _counter5D.k3 = val;
+            _counter5D.k5 = val;
+            _counter5D.k2 = val;
 
             _counter5D.Add(value2);
         }
@@ -76,9 +81,10 @@ namespace MetricsBench
         public void Add_Update3DimValueInEachCall_10DCounter()
         {
             value2++;
-            _counter10D.k3 = index++.ToString();
-            _counter10D.k5 = index++.ToString();
-            _counter10D.k2 = index++.ToString();
+            string val = index++.ToString();
+            _counter10D.k3 = val;
+            _counter10D.k5 = val;
+            _counter10D.k2 = val;
 
             _counter10D.Add(value2);
         }
@@ -87,11 +93,12 @@ namespace MetricsBench
         public void Add_Update5DimValueInEachCall_10DCounter()
         {
             value2++;
-            _counter10D.k3 = index++.ToString();
-            _counter10D.k5 = index++.ToString();
-            _counter10D.k2 = index++.ToString();
-            _counter10D.k9 = index++.ToString();
-            _counter10D.k7 = index++.ToString();
+            string val = index++.ToString();
+            _counter10D.k3 = val;
+            _counter10D.k5 = val;
+            _counter10D.k2 = val;
+            _counter10D.k9 = val;
+            _counter10D.k7 = val;
 
             _counter10D.Add(value2);
         }
