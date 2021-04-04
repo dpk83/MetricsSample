@@ -66,7 +66,7 @@ namespace MetricsBench
         CounterMetricH<DimensionValues10D> counterMetric10D;
         static int value1 = 0;
         static int value2 = 0;
-        static ulong index = 0;
+        private string[] _valuesToFeed = { "feed1", "feed2", "feed3", "feed4", "feed5" };
 
         public CounterHBenchmark()
         {
@@ -107,8 +107,8 @@ namespace MetricsBench
         public void Add_Update1DimValueInEachCall_5DCounter()
         {
             value2++;
-            string val = index++.ToString();
-            dimensions["k3"] = val;
+
+            dimensions["k3"] = _valuesToFeed[value2 % 5];
             counterMetric5D.Add(value2, dimensions);
         }
 
@@ -116,10 +116,10 @@ namespace MetricsBench
         public void Add_Update3DimValueInEachCall_5DCounter()
         {
             value2++;
-            string val = index++.ToString();
-            dimensions["k3"] = val;
-            dimensions["k5"] = val;
-            dimensions["k2"] = val;
+
+            dimensions["k3"] = _valuesToFeed[value2 % 5];
+            dimensions["k5"] = _valuesToFeed[value2 % 5];
+            dimensions["k2"] = _valuesToFeed[value2 % 5];
             counterMetric5D.Add(value2, dimensions);
         }
 
@@ -127,10 +127,10 @@ namespace MetricsBench
         public void Add_Update3DimValueInEachCall_10DCounter()
         {
             value2++;
-            string val = index++.ToString();
-            dimensions10D["k3"] = val;
-            dimensions10D["k5"] = val;
-            dimensions10D["k10"] = val;
+
+            dimensions10D["k3"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k5"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k10"] = _valuesToFeed[value2 % 5];
             counterMetric10D.Add(value2, dimensions10D);
         }
 
@@ -138,12 +138,12 @@ namespace MetricsBench
         public void Add_Update5DimValueInEachCall_10DCounter()
         {
             value2++;
-            string val = index++.ToString();
-            dimensions10D["k1"] = val;
-            dimensions10D["k3"] = val;
-            dimensions10D["k6"] = val;
-            dimensions10D["k5"] = val;
-            dimensions10D["k10"] = val;
+
+            dimensions10D["k1"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k3"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k6"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k5"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k10"] = _valuesToFeed[value2 % 5];
             counterMetric10D.Add(value2, dimensions10D);
         }
 
@@ -151,17 +151,17 @@ namespace MetricsBench
         public void Add_Update10DimValueInEachCall_10DCounter()
         {
             value2++;
-            string val = index++.ToString();
-            dimensions10D["k1"] = val;
-            dimensions10D["k3"] = val;
-            dimensions10D["k6"] = val;
-            dimensions10D["k5"] = val;
-            dimensions10D["k10"] = val;
-            dimensions10D["k2"] = val;
-            dimensions10D["k4"] = val;
-            dimensions10D["k7"] = val;
-            dimensions10D["k8"] = val;
-            dimensions10D["k9"] = val;
+
+            dimensions10D["k1"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k3"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k6"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k5"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k10"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k2"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k4"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k7"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k8"] = _valuesToFeed[value2 % 5];
+            dimensions10D["k9"] = _valuesToFeed[value2 % 5];
             counterMetric10D.Add(value2, dimensions10D);
         }
     }

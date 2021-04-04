@@ -69,28 +69,45 @@
             public string k1
             {
                 get => _valArray[0];
-                set { _valArray[0] = value; _isDirty = true; }
+                set { if (_valArray[0] != value) { _valArray[0] = value; _isDirty = true; } }
             }
             public string k2
             {
                 get => _valArray[1];
-                set { _valArray[1] = value; _isDirty = true; }
+                set { if (_valArray[1] != value) { _valArray[1] = value; _isDirty = true; } }
             }
             public string k3
             {
                 get => _valArray[2];
-                set { _valArray[2] = value; _isDirty = true; }
+                set { if (_valArray[2] != value) { _valArray[2] = value; _isDirty = true; } }
             }
             public string k4
             {
                 get => _valArray[3];
-                set { _valArray[3] = value; _isDirty = true; }
+                set { if (_valArray[3] != value) { _valArray[3] = value; _isDirty = true; } }
             }
             public string k5
             {
                 get => _valArray[4];
-                set { _valArray[4] = value; _isDirty = true; }
+                set { if (_valArray[4] != value) { _valArray[4] = value; _isDirty = true; } }
             }
+            public string this[string key]
+            {
+                set
+                {
+                    switch(key)
+                    {
+
+                        case "k1": k1 = value;return;
+                        case "k2": k2 = value;return;
+                        case "k3": k3 = value;return;
+                        case "k4": k4 = value;return;
+                        case "k5": k5 = value;return;
+                        default: throw new ArgumentOutOfRangeException(nameof(key));
+                    }
+                }
+            }
+            
             
             public void Add(long value)
             {
@@ -156,53 +173,75 @@
             public string k1
             {
                 get => _valArray[0];
-                set { _valArray[0] = value; _isDirty = true; }
+                set { if (_valArray[0] != value) { _valArray[0] = value; _isDirty = true; } }
             }
             public string k2
             {
                 get => _valArray[1];
-                set { _valArray[1] = value; _isDirty = true; }
+                set { if (_valArray[1] != value) { _valArray[1] = value; _isDirty = true; } }
             }
             public string k3
             {
                 get => _valArray[2];
-                set { _valArray[2] = value; _isDirty = true; }
+                set { if (_valArray[2] != value) { _valArray[2] = value; _isDirty = true; } }
             }
             public string k4
             {
                 get => _valArray[3];
-                set { _valArray[3] = value; _isDirty = true; }
+                set { if (_valArray[3] != value) { _valArray[3] = value; _isDirty = true; } }
             }
             public string k5
             {
                 get => _valArray[4];
-                set { _valArray[4] = value; _isDirty = true; }
+                set { if (_valArray[4] != value) { _valArray[4] = value; _isDirty = true; } }
             }
             public string k6
             {
                 get => _valArray[5];
-                set { _valArray[5] = value; _isDirty = true; }
+                set { if (_valArray[5] != value) { _valArray[5] = value; _isDirty = true; } }
             }
             public string k7
             {
                 get => _valArray[6];
-                set { _valArray[6] = value; _isDirty = true; }
+                set { if (_valArray[6] != value) { _valArray[6] = value; _isDirty = true; } }
             }
             public string k8
             {
                 get => _valArray[7];
-                set { _valArray[7] = value; _isDirty = true; }
+                set { if (_valArray[7] != value) { _valArray[7] = value; _isDirty = true; } }
             }
             public string k9
             {
                 get => _valArray[8];
-                set { _valArray[8] = value; _isDirty = true; }
+                set { if (_valArray[8] != value) { _valArray[8] = value; _isDirty = true; } }
             }
             public string k10
             {
                 get => _valArray[9];
-                set { _valArray[9] = value; _isDirty = true; }
+                set { if (_valArray[9] != value) { _valArray[9] = value; _isDirty = true; } }
             }
+            public string this[string key]
+            {
+                set
+                {
+                    switch(key)
+                    {
+
+                        case "k1": k1 = value;return;
+                        case "k2": k2 = value;return;
+                        case "k3": k3 = value;return;
+                        case "k4": k4 = value;return;
+                        case "k5": k5 = value;return;
+                        case "k6": k6 = value;return;
+                        case "k7": k7 = value;return;
+                        case "k8": k8 = value;return;
+                        case "k9": k9 = value;return;
+                        case "k10": k10 = value;return;
+                        default: throw new ArgumentOutOfRangeException(nameof(key));
+                    }
+                }
+            }
+            
             
             public void Add(long value)
             {

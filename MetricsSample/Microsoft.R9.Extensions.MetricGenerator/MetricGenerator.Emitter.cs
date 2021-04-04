@@ -141,7 +141,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             {
                 return $@"
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static {metricInstrumentMethod.InstrumentClassType} Create{metricInstrumentMethod.InstrumentClassType}(MeterOptions meterOptions, string metricName, {GenRegularParameters(metricInstrumentMethod)})
+            public static {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}(MeterOptions meterOptions, string metricName, {GenRegularParameters(metricInstrumentMethod)})
             {{
                 var cumulativeMetric = meterOptions.MdmMetricFactory.CreateUInt64CumulativeMetric(
                                             MdmMetricFlags.CumulativeMetricDefault,
@@ -150,7 +150,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             metricName,
                                             {GenRegularParametersNames(metricInstrumentMethod)});
 
-                return new {metricInstrumentMethod.InstrumentClassType}(cumulativeMetric, {GenRegularParameters(metricInstrumentMethod, false)});
+                return new {metricInstrumentMethod.MetricName}(cumulativeMetric, {GenRegularParameters(metricInstrumentMethod, false)});
             }}
 ";
             }
@@ -184,7 +184,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             {
                 return $@"
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class {metricInstrumentMethod.InstrumentClassType} : ICounterMetric<long>
+        public class {metricInstrumentMethod.MetricName} : ICounterMetric<long>
         {{
             private string[] _keyArray;
             private string[] _valArray;
@@ -194,7 +194,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
             internal IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod.RegularParameters.Count)}, ulong> CumulativeMetric {{ get; }}
 
-            public {metricInstrumentMethod.InstrumentClassType}
+            public {metricInstrumentMethod.MetricName}
                 (IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod.RegularParameters.Count)}, ulong> cumulativeMetric, 
                 {GenRegularParameters(metricInstrumentMethod)})
             {{
@@ -229,7 +229,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             {{
                 GenevaMeter genevaMeter = meter as GenevaMeter;
                 MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.Create{metricInstrumentMethod.InstrumentClassType}(meterOptions, ""{metricInstrumentMethod.MetricName}"", {GenRegularParameters(metricInstrumentMethod, false)});
+                return GeneratedCounterMetricFactory.Create{metricInstrumentMethod.MetricName}(meterOptions, ""{metricInstrumentMethod.MetricName}"", {GenRegularParameters(metricInstrumentMethod, false)});
             }}
             ";
             }
@@ -343,6 +343,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             private string GenClassProperties(MetricInstrumentMethod metricInstrumentMethod)
             {
                 var sb = GetStringBuilder();
+                var subsb = GetStringBuilder();
                 try
                 {
                     int index = 0;
@@ -352,16 +353,36 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             public string {p.Name}
             {{
                 get => _valArray[{index}];
-                set {{ _valArray[{index}] = value; _isDirty = true; }}
+                set {{ if (_valArray[{index}] != value) {{ _valArray[{index}] = value; _isDirty = true; }} }}
             }}");
 
                         index++;
                     }
 
+                    foreach (var p in metricInstrumentMethod.RegularParameters)
+                    {
+                        subsb.Append($@"
+                        case ""{p.Name}"": {p.Name} = value;return;");
+                    }
+                        _ = sb.Append($@"
+            public string this[string key]
+            {{
+                set
+                {{
+                    switch(key)
+                    {{
+{subsb}
+                        default: throw new ArgumentOutOfRangeException(nameof(key));
+                    }}
+                }}
+            }}
+            ");
+
                     return sb.ToString();
                 }
                 finally
                 {
+                    ReturnStringBuilder(subsb);
                     ReturnStringBuilder(sb);
                 }
             }

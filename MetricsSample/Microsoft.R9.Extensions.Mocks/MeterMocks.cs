@@ -15,6 +15,8 @@ namespace Microsoft.R9.Extensions.Meter
         /// Repeated keys in variable dimensions will be resolved in a manner when last value wins.
         /// </remarks>
         void Add(T value);
+
+        string this[string key] { set; }
     }
 
     public struct MeterOptions
@@ -41,6 +43,21 @@ namespace Microsoft.R9.Extensions.Meter.Geneva
             MeterOptions.MdmMetricFactory = mdmMetricFactory;
             MeterOptions.MonitoringAccount = monitoringAccount;
             MeterOptions.MetricNamespace = meterName;
+        }
+    }
+}
+
+
+namespace Temp
+{
+    public class T1
+    { 
+        public string this[string key]
+        {
+            set
+            { 
+            
+            }
         }
     }
 }

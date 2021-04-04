@@ -11,8 +11,7 @@ namespace MetricsBench
         static void Main(string[] args)
         {
             // Test1();
-
-             // Test2();
+            //Test2();
 
             RunBenchmark(args);
         }
@@ -36,8 +35,8 @@ namespace MetricsBench
 
         static void Test2()
         {
-            var c = new GenCounterBenchmark();
-            //c.Add_AlternateDimensionsBetweenCalls_5DCounter();
+            var c = new GenCounterBenchmark_2();
+            c.Add_Update3DimValueInEachCall_10DCounter();
         }
     }
 }

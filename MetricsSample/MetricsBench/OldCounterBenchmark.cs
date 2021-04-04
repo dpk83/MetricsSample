@@ -91,7 +91,7 @@ namespace MetricsBench
         CounterMetricOld<DimensionValues10D> counterMetric10D;
         static int value1 = 0;
         static int value2 = 0;
-        static ulong index = 0;
+        private string[] _valuesToFeed = { "feed1", "feed2", "feed3", "feed4", "feed5" };
 
         public OldCounterBenchmark()
         {
@@ -131,20 +131,20 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update1DimValueInEachCall_5DCounter()
         {
-            string val = index++.ToString();
-            List<ValueTuple<string, string>> updatedDim = new() { new("k3", val)};
+
+            List<ValueTuple<string, string>> updatedDim = new() { new("k3", _valuesToFeed[value2 % 5])};
             counterMetric.Add(value2, updatedDim);
         }
 
         [Benchmark]
         public void Add_Update3DimValueInEachCall_5DCounter()
         {
-            string val = index++.ToString();
+
             List<ValueTuple<string, string>> updatedDim = new() 
             { 
-                new("k3", val),
-                new("k5", val),
-                new("k2", val)
+                new("k3", _valuesToFeed[value2 % 5]),
+                new("k5", _valuesToFeed[value2 % 5]),
+                new("k2", _valuesToFeed[value2 % 5])
             };
 
             counterMetric.Add(value2, updatedDim);
@@ -153,12 +153,12 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update3DimValueInEachCall_10DCounter()
         {
-            string val = index++.ToString();
+
             List<ValueTuple<string, string>> updatedDim = new()
             {
-                new("k3", val),
-                new("k5", val),
-                new("k9", val)
+                new("k3", _valuesToFeed[value2 % 5]),
+                new("k5", _valuesToFeed[value2 % 5]),
+                new("k9", _valuesToFeed[value2 % 5])
             };
 
             counterMetric10D.Add(value2, dimensions10D);
@@ -167,14 +167,14 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update5DimValueInEachCall_10DCounter()
         {
-            string val = index++.ToString();
+
             List<ValueTuple<string, string>> updatedDim = new()
             {
-                new("k2", val),
-                new("k3", val),
-                new("k6", val),
-                new("k5", val),
-                new("k9", val)
+                new("k2", _valuesToFeed[value2 % 5]),
+                new("k3", _valuesToFeed[value2 % 5]),
+                new("k6", _valuesToFeed[value2 % 5]),
+                new("k5", _valuesToFeed[value2 % 5]),
+                new("k9", _valuesToFeed[value2 % 5])
             };
 
             counterMetric10D.Add(value2, dimensions10D);
@@ -183,19 +183,19 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update10DimValueInEachCall_10DCounter()
         {
-            string val = index++.ToString();
+
             List<ValueTuple<string, string>> updatedDim = new()
             {
-                new("k2", val),
-                new("k3", val),
-                new("k6", val),
-                new("k5", val),
-                new("k9", val),
-                new("k1", val),
-                new("k4", val),
-                new("k6", val),
-                new("k7", val),
-                new("k8", val)
+                new("k2", _valuesToFeed[value2 % 5]),
+                new("k3", _valuesToFeed[value2 % 5]),
+                new("k6", _valuesToFeed[value2 % 5]),
+                new("k5", _valuesToFeed[value2 % 5]),
+                new("k9", _valuesToFeed[value2 % 5]),
+                new("k1", _valuesToFeed[value2 % 5]),
+                new("k4", _valuesToFeed[value2 % 5]),
+                new("k6", _valuesToFeed[value2 % 5]),
+                new("k7", _valuesToFeed[value2 % 5]),
+                new("k8", _valuesToFeed[value2 % 5])
             };
 
             counterMetric10D.Add(value2, dimensions10D);
