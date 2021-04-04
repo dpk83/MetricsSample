@@ -51,11 +51,11 @@ Currently all above version implements the UpDownCounter from OpenTelemetry spec
 |------------------------------------------ |----------:|----------:|----------:|----------:|
 |                         Add_NullDimension |         - |         - |         - |         - |
 |                    Add_NoDimensionChanges |     120 B |         - |         - |         - |
-|   Add_Update1DimValueInEachCall_5DCounter |     280 B |     128 B |      64 B |      40 B |
-|   Add_Update3DimValueInEachCall_5DCounter |     280 B |     152 B |      64 B |      40 B |
-|  Add_Update3DimValueInEachCall_10DCounter |     280 B |     184 B |      64 B |      40 B |
-|  Add_Update5DimValueInEachCall_10DCounter |     432 B |     208 B |      64 B |      40 B |
-| Add_Update10DimValueInEachCall_10DCounter |     712 B |     288 B |      64 B |      40 B |
+|   Add_Update1DimValueInEachCall_5DCounter |     240 B |      88 B |      24 B |         - |
+|   Add_Update3DimValueInEachCall_5DCounter |     240 B |      96 B |      24 B |         - |
+|  Add_Update3DimValueInEachCall_10DCounter |     240 B |     128 B |      24 B |         - |
+|  Add_Update5DimValueInEachCall_10DCounter |     392 B |     136 B |      24 B |         - |
+| Add_Update10DimValueInEachCall_10DCounter |     672 B |     168 B |      24 B |         - |
 
 
 Full Benchmark reports for all four versions can be found [here](https://github.com/dpk83/MetricsSample/tree/main/MetricsSample/MetricsBench/BenchResult)
