@@ -83,5 +83,21 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
+
+        public static DiagnosticDescriptor ErrorMissingStaticDimension { get; } = new(
+            id: "MG0010",
+            title: Resources.ErrorMissingStaticDimensionParameterTitle,
+            messageFormat: Resources.ErrorMissingStaticDimensionParameterMessage,
+            category: "MetricGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
+        public static DiagnosticDescriptor ErrorMissingStaticDimensionParameter { get; } = new(
+            id: "MG0011",
+            title: Resources.ErrorMissingStaticDimensionTitle,
+            messageFormat: Resources.ErrorMissingStaticDimensionMessage,
+            category: "MetricGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
     }
 }

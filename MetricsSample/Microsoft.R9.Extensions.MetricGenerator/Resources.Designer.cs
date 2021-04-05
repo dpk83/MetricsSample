@@ -239,5 +239,48 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
                 return ResourceManager.GetString("ErrorNotPartialMethodTitle", resourceCulture);
             }
         }
+
+        /// <summary>
+        /// Looks up a localized string similar to A corresponding entry for parameter {0} is not found in static dimension list .
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        /// Looks up a localized string similar to A corresponding entry for one of the parameters is not found in static dimension list.
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        /// Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionParameterMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        /// Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionParameterTitle
+        {
+            get {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterTitle", resourceCulture);
+            }
+        }
     }
 }

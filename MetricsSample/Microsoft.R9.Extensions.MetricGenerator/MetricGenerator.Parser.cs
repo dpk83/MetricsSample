@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -80,7 +81,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         continue;
                                     }
 
-                                    var metricName = ExtractMetricName(methodAttribute.ArgumentList!, semanticModel);
+                                    var (metricName, staticDim, dynamicDim) = ExtractMetricName(methodAttribute.ArgumentList!, semanticModel);
                                     var methodSymbol = semanticModel.GetDeclaredSymbol(method, _cancellationToken);
 
                                     if (methodSymbol != null)
@@ -89,10 +90,13 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         {
                                             Name = method.Identifier.ToString(),
                                             MetricName = metricName,
+                                            StaticDimensions = GetDimensionsList(staticDim),
+                                            DynamicDimensions = GetDimensionsList(dynamicDim),
                                             IsExtensionMethod = methodSymbol.IsExtensionMethod,
                                             Modifiers = method.Modifiers.ToString(),
                                             InstrumentClassType = semanticModel.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
                                         };
+
 
                                         bool keepMethod = true;
                                         if (metricInstrumentMethod.Name[0] == '_')
@@ -241,19 +245,38 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                     }
                                                 }
                                             }
+                                        }
 
-                                            if (keepMethod)
+                                        foreach(var param in metricInstrumentMethod.RegularParameters)
+                                        {
+                                            if (!metricInstrumentMethod.StaticDimensions.Contains(param.Name))
                                             {
-                                                metricInstrumentClass ??= new MetricInstrumentClass
-                                                {
-                                                    Namespace = nspace,
-                                                    Name = classDeclaration.Identifier.ToString() + classDeclaration.TypeParameterList,
-                                                    Constraints = classDeclaration.ConstraintClauses.ToString(),
-                                                };
-
-                                                metricInstrumentClass.Methods.Add(metricInstrumentMethod);
+                                                // Report error, all dimenions passed to the method should be static dimensions
+                                                // and should be provided as StaticDimensions in the attribute
+                                                Diag(DiagDescriptors.ErrorMissingStaticDimension, method.GetLocation(), param.Name);
                                                 keepMethod = false;
                                             }
+                                        }
+
+                                        if (metricInstrumentMethod.RegularParameters.Count != metricInstrumentMethod.StaticDimensions.Count)
+                                        {
+                                            // report error, all dimensions passed in attribute as static dimensions should be 
+                                            // passed as string parameters to the method
+                                            Diag(DiagDescriptors.ErrorMissingStaticDimension, method.GetLocation());
+                                            keepMethod = false;
+                                        }
+
+                                        if (keepMethod)
+                                        {
+                                            metricInstrumentClass ??= new MetricInstrumentClass
+                                            {
+                                                Namespace = nspace,
+                                                Name = classDeclaration.Identifier.ToString() + classDeclaration.TypeParameterList,
+                                                Constraints = classDeclaration.ConstraintClauses.ToString(),
+                                            };
+
+                                            metricInstrumentClass.Methods.Add(metricInstrumentMethod);
+                                            keepMethod = false;
                                         }
                                     }
                                 }
@@ -277,20 +300,46 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 return conversion.IsIdentity || (conversion.IsReference && conversion.IsImplicit);
             }
 
-            private string? ExtractMetricName(AttributeArgumentListSyntax args, SemanticModel sm)
+            private (string?, string, string) ExtractMetricName(AttributeArgumentListSyntax args, SemanticModel sm)
             {
                 string? metricName = null;
-                if (args.Arguments.Count > 0)
+                string staticDim = string.Empty;
+                string dynamicDim = string.Empty;
+                int index = 0;
+                foreach (var arg in args.Arguments)
                 {
-                    var arg = args.Arguments[0];
-                    metricName = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
+                    if (index == 0)
+                    {
+                        metricName = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
+                    }
+                    else if (index == 1)
+                    {
+                        staticDim = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
+                    }
+                    else if (index == 2)
+                    {
+                        dynamicDim = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
+                    }
+                    index++;
                 }
-                return metricName;
+
+                return (metricName, staticDim, dynamicDim);
             }
 
             private void Diag(DiagnosticDescriptor desc, Location? location, params object?[]? messageArgs)
             {
                 _reportDiagnostic(Diagnostic.Create(desc, location, messageArgs));
+            }
+
+            private List<string> GetDimensionsList(string dimensionListString)
+            {
+                if (string.IsNullOrWhiteSpace(dimensionListString))
+                {
+                    return new();
+                }
+
+                var dimensionTokens = Regex.Split(dimensionListString, ",");
+                return new List<string>(dimensionTokens);
             }
         }
 
@@ -306,6 +355,8 @@ namespace Microsoft.R9.Extensions.MetricGenerator
         {
             public readonly List<MetricInstrumentParameter> AllParameters = new();
             public readonly List<MetricInstrumentParameter> RegularParameters = new();
+            public List<string> StaticDimensions = new();
+            public List<string> DynamicDimensions = new();
             public string? Name;
             public string? MetricName;
             public bool IsExtensionMethod;

@@ -10,19 +10,10 @@ namespace MetricsSample
 {
     public static partial class Metric
     {
-        // [MetricGen(1, MetricType.Int64, @"{env} {region} {}")]
-        // [Counter]
-        //public void requestAvailabilityCounter(int value, string env, string region, string appName, string requestName, string reqHost, string reqResultCode)
-        //{ 
-        //}
-
-        // [Counter(0)]
-        // public static partial void MyCounter(string clusterId, string requestId);
-
-        [Int64CounterMetric("myCounterMetric")]
+        [Int64CounterMetric("MyCounter", "env,host,requestName")]
         public static partial MyCounter CreateMyCounter(IMeter meter, string env, string host, string requestName);
 
-        [Int64CounterMetric("yourCounter")]
-        public static partial YourCounter CreateYourCounter(IMeter meter, string env, string host, string requestName, string region, string cluster);
+        [Int64CounterMetric("YourCounter", "env,host,region,cluster", "requestName")]
+        public static partial YourCounter CreateYourCounter(IMeter meter, string env, string host, string region, string cluster);
     }
 }

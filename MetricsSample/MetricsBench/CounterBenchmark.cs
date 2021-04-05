@@ -1,7 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using MetricsLibrary;
 using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
-using Microsoft.R9.Extensions.Meter;
 using Microsoft.R9.Extensions.Meter.Geneva;
 using System;
 using System.Collections.Generic;

@@ -69,13 +69,6 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 var sb = GetStringBuilder();
                 try
                 {
-                    _ = sb.Append(@"
-    using System;
-    using System.Collections.Generic;
-    using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
-    using Microsoft.R9.Extensions.Meter;
-    using Microsoft.R9.Extensions.Meter.Geneva;
-");
                     _ = sb.Append(GenCounterCreateMethods(metricInstrumentClass));
 
                     foreach (var metricInstrumentMethod in metricInstrumentClass.Methods)
@@ -85,10 +78,23 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
                     if (string.IsNullOrWhiteSpace(metricInstrumentClass.Namespace))
                     {
-                        return sb.ToString();
+                        return $@"
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
+    using Microsoft.R9.Extensions.Meter;
+    using Microsoft.R9.Extensions.Meter.Geneva;
+
+    {sb}
+    ";
                     }
 
                     return $@"
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
+    using Microsoft.R9.Extensions.Meter;
+    using Microsoft.R9.Extensions.Meter.Geneva;
 
     namespace {metricInstrumentClass.Namespace}
     {{
@@ -141,16 +147,17 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             {
                 return $@"
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}(MeterOptions meterOptions, string metricName, {GenRegularParameters(metricInstrumentMethod)})
+            public static {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}(MeterOptions meterOptions, string metricName{GenStaticParameters(metricInstrumentMethod)})
             {{
                 var cumulativeMetric = meterOptions.MdmMetricFactory.CreateUInt64CumulativeMetric(
                                             MdmMetricFlags.CumulativeMetricDefault,
                                             meterOptions.MonitoringAccount,
                                             meterOptions.MetricNamespace,
-                                            metricName,
-                                            {GenRegularParametersNames(metricInstrumentMethod)});
+                                            metricName
+                                            {GenStaticParametersNames(metricInstrumentMethod)}
+                                            {GenDynamicParametersNames(metricInstrumentMethod)});
 
-                return new {metricInstrumentMethod.MetricName}(cumulativeMetric, {GenRegularParameters(metricInstrumentMethod, false)});
+                return new {metricInstrumentMethod.MetricName}(cumulativeMetric{GenStaticParameters(metricInstrumentMethod, false)});
             }}
 ";
             }
@@ -186,22 +193,26 @@ namespace Microsoft.R9.Extensions.MetricGenerator
         [global::System.Runtime.CompilerServices.CompilerGenerated]
         public class {metricInstrumentMethod.MetricName} : ICounterMetric<long>
         {{
-            private string[] _keyArray;
-            private string[] _valArray;
+            private string[] _staticKeyArray;
+            private string[] _staticValArray;
+            private string[] _dynamicKeyArray;
+            private string[] _dynamicValArray;            
 
-            private {GetDimensionsValueType(metricInstrumentMethod.RegularParameters.Count)} _defaultDimensionValues;
+            private {GetDimensionsValueType(metricInstrumentMethod)} _defaultDimensionValues;
             private bool _isDirty = true;
 
-            internal IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod.RegularParameters.Count)}, ulong> CumulativeMetric {{ get; }}
+            internal IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod)}, ulong> CumulativeMetric {{ get; }}
 
             public {metricInstrumentMethod.MetricName}
-                (IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod.RegularParameters.Count)}, ulong> cumulativeMetric, 
-                {GenRegularParameters(metricInstrumentMethod)})
+                (IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod)}, ulong> cumulativeMetric 
+                {GenStaticParameters(metricInstrumentMethod)})
             {{
                 CumulativeMetric = cumulativeMetric ?? throw new ArgumentNullException(nameof(cumulativeMetric));
-                int count = {metricInstrumentMethod.RegularParameters.Count};
-                _keyArray = new string[count];
-                _valArray = new string[count];
+                _staticKeyArray = new string[{metricInstrumentMethod.StaticDimensions.Count}]; 
+                _staticValArray = new string[{metricInstrumentMethod.StaticDimensions.Count}];
+
+                _dynamicKeyArray = new string[{metricInstrumentMethod.DynamicDimensions.Count}];  
+                _dynamicValArray = new string[{metricInstrumentMethod.DynamicDimensions.Count}];
 
                 {GenConstructorBody(metricInstrumentMethod)}
             }}
@@ -229,7 +240,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             {{
                 GenevaMeter genevaMeter = meter as GenevaMeter;
                 MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.Create{metricInstrumentMethod.MetricName}(meterOptions, ""{metricInstrumentMethod.MetricName}"", {GenRegularParameters(metricInstrumentMethod, false)});
+                return GeneratedCounterMetricFactory.Create{metricInstrumentMethod.MetricName}(meterOptions, ""{metricInstrumentMethod.MetricName}""{GenStaticParameters(metricInstrumentMethod, false)});
             }}
             ";
             }
@@ -317,17 +328,112 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 }
             }
 
+            private string GenStaticParameters(MetricInstrumentMethod metricInstrumentMethod, bool includeType = true)
+            {
+                var sb = GetStringBuilder();
+                try
+                {
+                    foreach (var dimension in metricInstrumentMethod.StaticDimensions)
+                    {
+                        _ = sb.Append(", ");
+
+                        if (includeType)
+                        {
+                            _ = sb.Append($"string ");  //sb.Append($"{dimension.Type}");
+                        }
+                        _ = sb.Append($"{dimension}");
+                    }
+
+                    return sb.ToString();
+                }
+                finally
+                {
+                    ReturnStringBuilder(sb);
+                }
+            }
+
+            private string GenDynamicParameters(MetricInstrumentMethod metricInstrumentMethod, bool includeType = true)
+            {
+                var sb = GetStringBuilder();
+                try
+                {
+                    foreach (var dimension in metricInstrumentMethod.DynamicDimensions)
+                    {
+                        _ = sb.Append(", ");
+
+                        if (includeType)
+                        {
+                            _ = sb.Append($"string ");  //sb.Append($"{dimension.Type}");
+                        }
+                        _ = sb.Append($"{dimension}");
+                    }
+
+                    return sb.ToString();
+                }
+                finally
+                {
+                    ReturnStringBuilder(sb);
+                }
+            }
+
+            private string GenStaticParametersNames(MetricInstrumentMethod metricInstrumentMethod)
+            {
+                var sb = GetStringBuilder();
+                try
+                {
+                    foreach (var dimension in metricInstrumentMethod.StaticDimensions)
+                    {
+                        _ = sb.Append(@$", ""{dimension}""");
+                    }
+
+                    return sb.ToString();
+                }
+                finally
+                {
+                    ReturnStringBuilder(sb);
+                }
+            }
+
+            private string GenDynamicParametersNames(MetricInstrumentMethod metricInstrumentMethod, bool includeType = true)
+            {
+                var sb = GetStringBuilder();
+                try
+                {
+                    foreach (var dimension in metricInstrumentMethod.DynamicDimensions)
+                    {
+                        _ = sb.Append(@$", ""{dimension}""");
+                    }
+
+                    return sb.ToString();
+                }
+                finally
+                {
+                    ReturnStringBuilder(sb);
+                }
+            }
+
             private string GenConstructorBody(MetricInstrumentMethod metricInstrumentMethod)
             {
                 var sb = GetStringBuilder();
                 try
                 {
                     int index = 0;
-                    foreach (var p in metricInstrumentMethod.RegularParameters)
+                    foreach (var staticDimension in metricInstrumentMethod.StaticDimensions)
                     {
                         sb.Append($@"
-                _keyArray[{index}] = ""{p.Name}"";
-                _valArray[{index}] = {p.Name};"
+                _staticKeyArray[{index}] = ""{staticDimension}"";
+                _staticValArray[{index}] = {staticDimension};"
+                                );
+                        index++;
+                    }
+
+                    index = 0;
+                    foreach (var dynamicDimension in metricInstrumentMethod.DynamicDimensions)
+                    {
+                        sb.Append($@"
+
+                _dynamicKeyArray[{index}] = ""{dynamicDimension}"";
+                _dynamicValArray[{index}] = {dynamicDimension};"
                                 );
                         index++;
                     }
@@ -347,22 +453,22 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 try
                 {
                     int index = 0;
-                    foreach (var p in metricInstrumentMethod.RegularParameters)
+                    foreach (var dimension in metricInstrumentMethod.DynamicDimensions)
                     {
                         _ = sb.Append($@"
-            public string {p.Name}
+            public string {dimension}
             {{
-                get => _valArray[{index}];
-                set {{ if (_valArray[{index}] != value) {{ _valArray[{index}] = value; _isDirty = true; }} }}
+                get => _dynamicValArray[{index}];
+                set {{ if (_dynamicValArray[{index}] != value) {{ _dynamicValArray[{index}] = value; _isDirty = true; }} }}
             }}");
 
                         index++;
                     }
 
-                    foreach (var p in metricInstrumentMethod.RegularParameters)
+                    foreach (var dimension in metricInstrumentMethod.DynamicDimensions)
                     {
                         subsb.Append($@"
-                        case ""{p.Name}"": {p.Name} = value;return;");
+                        case ""{dimension}"": {dimension} = value;return;");
                     }
                         _ = sb.Append($@"
             public string this[string key]
@@ -390,17 +496,47 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             private string GenClassMethods(MetricInstrumentMethod metricInstrumentMethod)
             {
                 var sb = GetStringBuilder();
+                var subsb = GetStringBuilder();
                 try
                 {
-                    for (int i = 0; i < metricInstrumentMethod.RegularParameters.Count; i++)
+                    int i = 0;
+                    for (; i < metricInstrumentMethod.StaticDimensions.Count; i++)
                     {
                         if (i > 0)
                         {
                             sb.Append(", ");
                         }
-                        sb.Append($"_valArray[{i}]");
+                        sb.Append($"_staticValArray[{i}]");
                     }
-                    return $@"
+
+                    for (i = 0; i < metricInstrumentMethod.DynamicDimensions.Count; i++)
+                    {
+                        if (i > 0 || metricInstrumentMethod.StaticDimensions.Count > 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        sb.Append($"_dynamicValArray[{i}]");
+                    }
+
+                    foreach (var dimension in metricInstrumentMethod.DynamicDimensions)
+                    {
+                        subsb.Append($@"
+                this.{dimension} = {dimension};");
+                    }
+
+                    string str = string.Empty;
+                    if (metricInstrumentMethod.DynamicDimensions.Count > 0)
+                    {
+                        str = $@"
+            public void Add(long value{GenDynamicParameters(metricInstrumentMethod)})
+            {{
+                {subsb}
+                Add(value);
+            }}";
+                    }
+
+                    return $@"{str}
+
             public void Add(long value)
             {{
                 if (value != 0)
@@ -420,6 +556,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 }
                 finally
                 {
+                    ReturnStringBuilder(subsb);
                     ReturnStringBuilder(sb);
                 }
             }
@@ -443,8 +580,9 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 _builders.Push(sb);
             }
 
-            private string GetDimensionsValueType(int count)
+            private string GetDimensionsValueType(MetricInstrumentMethod metricInstrumentMethod)
             {
+                int count = metricInstrumentMethod.StaticDimensions.Count + metricInstrumentMethod.DynamicDimensions.Count;
                 return string.Format($"DimensionValues{count}D");
             }
         }
