@@ -23,7 +23,7 @@ _Benchmark Name_: [**CounterHBenchmark**](https://github.com/dpk83/MetricsSample
 This is a minor variation of the above version 3.1. This introduces type [_**HDimension**_](https://github.com/dpk83/MetricsSample/blob/main/MetricsSample/MetricsLibrary/HDimension.cs). The only difference between _**Dimension**_ and _**HDimension**_ is the way hashes are calculated. In this version hashes are actually a combination of hash codes of all keys & values hash codes instead of the strings themselves. 
 
 ### **V4**: Version 4 of metrics API.
-_Benchmark Name_: [**GenCounterBenchmark**](https://github.com/dpk83/MetricsSample/blob/main/MetricsSample/MetricsBench/GenCounterBenchmark.cs)
+_Benchmark Name_: [**GenCounterBenchmark**](https://github.com/dpk83/MetricsSample/blob/main/MetricsSample/MetricsBench/GenCounterBenchmark_3.cs)
 
 This approach utilizes SourceGenerators. Developer defines a partial method for Creating counter. SourceGenerators then generates the required code with strong types. 
 

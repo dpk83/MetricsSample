@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsLibrary", "MetricsLi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsBench", "MetricsBench\MetricsBench.csproj", "{68788D06-1BC5-43D5-B4B6-483C5B76EE63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.R9.Extensions.MetricGenerator", "Microsoft.R9.Extensions.MetricGenerator\Microsoft.R9.Extensions.MetricGenerator.csproj", "{655D5C65-369E-41BB-8CED-1C5C1DD0AFAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.R9.Extensions.MetricGenerator", "Microsoft.R9.Extensions.MetricGenerator\Microsoft.R9.Extensions.MetricGenerator.csproj", "{655D5C65-369E-41BB-8CED-1C5C1DD0AFAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.R9.Extensions.MetricUtilities", "Microsoft.R9.Extensions.MetricUtilities\Microsoft.R9.Extensions.MetricUtilities.csproj", "{1AD0D88E-1914-4FB3-913F-20DB465409F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.R9.Extensions.MetricUtilities", "Microsoft.R9.Extensions.MetricUtilities\Microsoft.R9.Extensions.MetricUtilities.csproj", "{1AD0D88E-1914-4FB3-913F-20DB465409F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.R9.Extensions.Mocks", "Microsoft.R9.Extensions.Mocks\Microsoft.R9.Extensions.Mocks.csproj", "{757B8508-419A-4C7F-9AB4-6CF90E40C0EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.R9.Extensions.Mocks", "Microsoft.R9.Extensions.Mocks\Microsoft.R9.Extensions.Mocks.csproj", "{757B8508-419A-4C7F-9AB4-6CF90E40C0EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
