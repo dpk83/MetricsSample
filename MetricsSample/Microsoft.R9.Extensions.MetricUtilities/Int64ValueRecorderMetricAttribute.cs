@@ -5,14 +5,14 @@ using System;
 namespace Microsoft.R9.Extensions.MetricUtilities
 {
     /// <summary>
-    /// Provides information to guide the production of a strongly-typed Int64 counter type metric method.
+    /// Provides information to guide the production of a strongly-typed Int64 value recorder type metric method.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class Int64CounterMetricAttribute : Attribute
+    public sealed class Int64ValueRecorderMetricAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Int64CounterMetricAttribute"/> class.
-        /// This class is used to guide the production of strongly-typed Int64 counter type metric method.
+        /// Initializes a new instance of the <see cref="Int64ValueRecorderMetricAttribute"/> class.
+        /// This class is used to guide the production of strongly-typed Int64 value recorder type metric method.
         /// </summary>
         /// <param name="metricName">Name of the metric. Strongly-typed method and classes will be created using this name.</param>
         /// <param name="staticDimensions">A comma separated list of dimensions whose values will not change during metric lifetime.
@@ -30,11 +30,11 @@ namespace Microsoft.R9.Extensions.MetricUtilities
         /// <example>
         /// static partial class Metric
         /// {
-        ///     [Int64CounterMetricAttribute("RequestCounter", "env,hostName", "requestName")]
-        ///     static partial RequestCounter CreateRequestCounter(IMeter meter, string env, string hostName);
+        ///     [Int64ValueRecorderMetricAttribute("RequestValueRecorder", "env,hostName", "requestName")]
+        ///     static partial RequestValueRecorder CreateRequestValueRecorder(IMeter meter, string env, string hostName);
         /// }.
         /// </example>
-        public Int64CounterMetricAttribute(string metricName, string? staticDimensions = null, string? dynamicDimensions = null)
+        public Int64ValueRecorderMetricAttribute(string metricName, string? staticDimensions = null, string? dynamicDimensions = null)
         {
             MetricName = metricName;
             StaticDimensions = staticDimensions;

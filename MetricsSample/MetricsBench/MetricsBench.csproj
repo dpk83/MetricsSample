@@ -5,18 +5,29 @@
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IncludeSGenFilesOutputGroup></IncludeSGenFilesOutputGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="GeneratedSourceCodeSample\**" />
-    <EmbeddedResource Remove="GeneratedSourceCodeSample\**" />
-    <None Remove="GeneratedSourceCodeSample\**" />
-  </ItemGroup>
+  <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
+    <ItemGroup>
+      <Compile Include="Generated\**" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Compile Remove="Generated\**" />
+    </ItemGroup>
+  </Target>
 
+  <Target Name="CleanSourceGeneratedFiles" AfterTargets="Clean">
+    <RemoveDir Directories="Generated" />
+  </Target>
+  
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
     <PackageReference Include="MakeConst" Version="1.0.0" />
@@ -29,13 +40,5 @@
   <ItemGroup>
     <ProjectReference Include="..\MetricsLibrary\MetricsLibrary.csproj" />
   </ItemGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="rd /S /Q $(SolutionDir)MetricsBench\GeneratedSource" />
-  </Target>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /C /Y $(SolutionDir)MetricsBench\obj\Debug\net5.0\generated\Microsoft.R9.Extensions.MetricGenerator\Microsoft.R9.Extensions.MetricGenerator.MetricGenerator\*.cs $(SolutionDir)MetricsBench\GeneratedSource\" />
-  </Target>
 
 </Project>

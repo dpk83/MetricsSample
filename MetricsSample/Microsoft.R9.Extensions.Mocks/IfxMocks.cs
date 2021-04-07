@@ -18,6 +18,8 @@ namespace Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions
         bool IncrementBy(TValue value, TDim dimensionValues);
         bool DecrementBy(TValue value, TDim dimensionValues);
 
+        bool Set(TValue value, TDim dimensionValues);
+
         MdmMetricData<TValue> GetData(TDim dimensionValues);
     }
 
@@ -41,7 +43,11 @@ namespace Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions
         public bool IncrementBy(ulong value, TDim dimensionValues)
         {
             //Console.WriteLine($"{value}::");
-            return true; }
+            return true; 
+        }
+
+        public bool Set(ulong value, TDim dimensionValues)
+        { return true; }
     }
 
     public sealed class MdmMetricFactory : IMdmMetricFactory

@@ -29,18 +29,18 @@ namespace MetricsBench
 
         static void Test1()
         {
-            var c = new CounterBenchmark();
-            c.Add_NullDimension();
+            //var c = new CounterBenchmark();
+            //c.Add_NullDimension();
         }
 
         static void Test2()
         {
-            string staticDimensions = string.Empty;
-            var tokens = Regex.Split(staticDimensions, ",");
+            //string staticDimensions = string.Empty;
+            //var tokens = Regex.Split(staticDimensions, ",");
 
-            var b = new GenCounterBenchmark_3();
-            var c = new GenCounterBenchmark_3();
-            c.Add_Update3DimValueInEachCall_10DCounter();
+            //var b = new GenCounterBenchmark_3();
+            //var c = new GenCounterBenchmark_3();
+            //c.Add_Update3DimValueInEachCall_10DCounter();
         }
     }
 }

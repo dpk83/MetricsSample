@@ -125,6 +125,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
         public static partial class GeneratedCounterMetricFactory
         {{
             private static readonly ConcurrentDictionary<string, ICounterMetric<long>> _longCounterMetrics = new ();
+            private static readonly ConcurrentDictionary<string, IValueRecorderMetric<long>> _longValueRecorderMetrics = new ();
             {sb}
         }}
     ";
@@ -150,7 +151,9 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             {
                 var meterParam = metricInstrumentMethod.AllParameters[0];
 
-                return $@"
+                if (metricInstrumentMethod.instrumentType == InstrumentType.Counter)
+                {
+                    return $@"
             [global::System.Runtime.CompilerServices.CompilerGenerated]
             public static {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}({meterParam.Type} {meterParam.Name}{GenStaticParameters(metricInstrumentMethod)})
             {{
@@ -177,6 +180,39 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 return metric as {metricInstrumentMethod.MetricName};
             }}
 ";
+                }
+                else if (metricInstrumentMethod.instrumentType == InstrumentType.ValueRecorder)
+                {
+                    return $@"
+            [global::System.Runtime.CompilerServices.CompilerGenerated]
+            public static {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}({meterParam.Type} {meterParam.Name}{GenStaticParameters(metricInstrumentMethod)})
+            {{
+                string metricName = ""{metricInstrumentMethod.MetricName}"";
+                if (_longValueRecorderMetrics.TryGetValue(metricName, out var valueRecorderMetric))
+                {{
+                    return valueRecorderMetric as {metricInstrumentMethod.MetricName};
+                }}
+
+                GenevaMeter genevaMeter = meter as GenevaMeter;
+
+                var metric = _longValueRecorderMetrics.GetOrAdd(metricName, (key) => {{
+                    var cumulativeMetric = genevaMeter.MdmMetricFactory.CreateUInt64CumulativeMetric(
+                                                MdmMetricFlags.CumulativeMetricDefault,
+                                                genevaMeter.MonitoringAccount,
+                                                genevaMeter.MetricNamespace,
+                                                metricName
+                                                {GenStaticParametersNames(metricInstrumentMethod)}
+                                                {GenDynamicParametersNames(metricInstrumentMethod)});
+
+                    return new {metricInstrumentMethod.MetricName}(cumulativeMetric{GenStaticParameters(metricInstrumentMethod, false)});
+                }});
+
+                return metric as {metricInstrumentMethod.MetricName};
+            }}
+";
+                }
+                return $@"
+                throw new ArgumentException()";
             }
 
             private string GenCounterCreateMethods(MetricInstrumentClass metricInstrumentClass)
@@ -206,9 +242,10 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
             private string GenCounterClass(MetricInstrumentMethod metricInstrumentMethod)
             {
+                string interfaceName = (metricInstrumentMethod.instrumentType == InstrumentType.Counter) ? "ICounterMetric<long>" : "IValueRecorderMetric<long>";
                 return $@"
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public partial class {metricInstrumentMethod.MetricName} : ICounterMetric<long>
+        public partial class {metricInstrumentMethod.MetricName} : {interfaceName}
         {{
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -539,11 +576,21 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 this.{dimension} = {dimension};");
                     }
 
+                    string methodName = metricInstrumentMethod.instrumentType == InstrumentType.Counter ? "Add" : "Record";
+
+                    string commulativeOperation = metricInstrumentMethod.instrumentType == InstrumentType.Counter ?
+                        $@"_ = value > 0
+                            ? CumulativeMetric.IncrementBy((ulong)value, _defaultDimensionValues)
+                            : CumulativeMetric.DecrementBy((ulong)value, _defaultDimensionValues);
+                        " :
+                        $@"_ = CumulativeMetric.Set((ulong)value, _defaultDimensionValues);
+                        ";
+
                     string str = string.Empty;
                     if (metricInstrumentMethod.DynamicDimensions.Count > 0)
                     {
                         str = $@"
-            public void Add(long value{GenDynamicParameters(metricInstrumentMethod)})
+            public void {methodName}(long value{GenDynamicParameters(metricInstrumentMethod)})
             {{
                 {subsb}
                 Add(value);
@@ -552,12 +599,12 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
                     return $@"{str}
 
-            public void Add(long value, IList<(string key, string value)>? dimensions)
+            public void {methodName}(long value, IList<(string key, string value)>? dimensions)
             {{
                 throw new NotImplementedException();
             }}
 
-            public void Add(long value)
+            public void {methodName}(long value)
             {{
                 if (value != 0)
                 {{
@@ -567,9 +614,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                         _isDirty = false;
                     }}
 
-                    _ = value > 0
-                        ? CumulativeMetric.IncrementBy((ulong)value, _defaultDimensionValues)
-                        : CumulativeMetric.DecrementBy((ulong)value, _defaultDimensionValues);
+                    {commulativeOperation}
                 }}
             }}
             ";

@@ -7,15 +7,15 @@ namespace Microsoft.R9.Extensions.Meter
     public interface ICounterMetric<in T>
         where T : struct
     {
-        /// <summary>
-        /// Lets you add a value to a metric.
-        /// </summary>
-        /// <param name="value">Value by which the counter should be incremented or decremented.</param>
-        /// <remarks>
-        /// Repeated keys in variable dimensions will be resolved in a manner when last value wins.
-        /// </remarks>
         void Add(T value);
 
+        string this[string key] { set; }
+    }
+
+    public interface IValueRecorderMetric<in T>
+        where T : struct
+    {
+        void Record(T value);
         string this[string key] { set; }
     }
 

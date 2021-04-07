@@ -27,9 +27,17 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             public IReadOnlyList<MetricInstrumentClass> GetCounterClasses(IEnumerable<ClassDeclarationSyntax> classes)
             {
                 const string CounterAttribute = "Microsoft.R9.Extensions.MetricUtilities.Int64CounterMetricAttribute";
+                const string ValueRecorderAttribute = "Microsoft.R9.Extensions.MetricUtilities.Int64ValueRecorderMetricAttribute";
 
                 var counterAttribute = _compilation.GetTypeByMetadataName(CounterAttribute);
                 if (counterAttribute is null)
+                {
+                    // nothing to do if this type isn't available
+                    return Array.Empty<MetricInstrumentClass>();
+                }
+
+                var valueRecorderAttribute = _compilation.GetTypeByMetadataName(ValueRecorderAttribute);
+                if (valueRecorderAttribute is null)
                 {
                     // nothing to do if this type isn't available
                     return Array.Empty<MetricInstrumentClass>();
@@ -74,8 +82,16 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                     semanticModel ??= _compilation.GetSemanticModel(classDeclaration.SyntaxTree);
 
                                     var methodAttributeSymbol = semanticModel.GetSymbolInfo(methodAttribute, _cancellationToken).Symbol as IMethodSymbol;
-                                    if (methodAttributeSymbol == null ||
-                                        !counterAttribute.Equals(methodAttributeSymbol.ContainingType, SymbolEqualityComparer.Default))
+                                    if (methodAttributeSymbol == null)
+                                    {
+                                        // badly formed attribute definition, or not the right attribute
+                                        continue;
+                                    }
+
+                                    bool isCounterAttribute = counterAttribute.Equals(methodAttributeSymbol.ContainingType, SymbolEqualityComparer.Default);
+                                    bool isValueRecorderAttribute = valueRecorderAttribute.Equals(methodAttributeSymbol.ContainingType, SymbolEqualityComparer.Default);
+
+                                    if (!isCounterAttribute && !isValueRecorderAttribute)
                                     {
                                         // badly formed attribute definition, or not the right attribute
                                         continue;
@@ -90,6 +106,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         {
                                             Name = method.Identifier.ToString(),
                                             MetricName = metricName,
+                                            instrumentType = isCounterAttribute ? InstrumentType.Counter : InstrumentType.ValueRecorder,
                                             StaticDimensions = GetDimensionsList(staticDim),
                                             DynamicDimensions = GetDimensionsList(dynamicDim),
                                             IsExtensionMethod = methodSymbol.IsExtensionMethod,
@@ -368,6 +385,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             public bool IsExtensionMethod;
             public string Modifiers = string.Empty;
             public string InstrumentClassType = string.Empty;
+            public InstrumentType instrumentType;
         }
 
         internal class MetricInstrumentParameter
@@ -376,6 +394,12 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             public string Type = string.Empty;
             public bool IsMeter = false;
             public bool IsRegular => !IsMeter;
+        }
+
+        internal enum InstrumentType
+        { 
+            Counter = 0,
+            ValueRecorder = 1
         }
     }
 }

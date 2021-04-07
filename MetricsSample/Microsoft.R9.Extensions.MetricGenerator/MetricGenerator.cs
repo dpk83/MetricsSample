@@ -38,10 +38,10 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             //context.AddSource("GeneratedMeterInterface", SourceText.From(meterInterface, Encoding.UTF8));
 
             var genevaMeter = emitter.EmitGenevaMeter(counterClasses, context.CancellationToken);
-            context.AddSource("GeneratedGenevaMeter", SourceText.From(genevaMeter, Encoding.UTF8));
+            context.AddSource("GeneratedGenevaMeter.SourceGenerated", SourceText.From(genevaMeter, Encoding.UTF8));
 
             var metricInstruments = emitter.EmitMetricInstruments(counterClasses, context.CancellationToken);
-            context.AddSource(nameof(MetricGenerator), SourceText.From(metricInstruments, Encoding.UTF8));
+            context.AddSource("MetricGenerator.SourceGenerated", SourceText.From(metricInstruments, Encoding.UTF8));
         }
 
         [ExcludeFromCodeCoverage]
