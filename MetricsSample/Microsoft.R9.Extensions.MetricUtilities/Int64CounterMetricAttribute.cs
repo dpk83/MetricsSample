@@ -9,7 +9,7 @@ namespace Microsoft.R9.Extensions.MetricUtilities
         {
             MetricName = metricName;
             StaticDimensions = staticDimensions;
-            DynamicDimensions = staticDimensions;
+            DynamicDimensions = dynamicDimensions;
         }
 
         /// <summary>

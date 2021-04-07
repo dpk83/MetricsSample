@@ -61,7 +61,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metric method names cannot start with _..
+        ///   Looks up a localized string similar to Metric method names cannot start with _.
         /// </summary>
         internal static string ErrorInvalidMethodNameMessage {
             get {
@@ -151,7 +151,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple metric instrument methods are using metric name {0}..
+        ///   Looks up a localized string similar to Multiple metric instrument methods are using metric name {0}.
         /// </summary>
         internal static string ErrorMetricNameReuseMessage {
             get {
@@ -160,7 +160,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple logging methods cannot use the same metric name..
+        ///   Looks up a localized string similar to Multiple logging methods cannot use the same metric name.
         /// </summary>
         internal static string ErrorMetricNameReuseTitle {
             get {
@@ -205,6 +205,42 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A corresponding entry for parameter {0} is not found in static dimension list.
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionMessage {
+            get {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionParameterMessage {
+            get {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionParameterTitle {
+            get {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A corresponding entry for one of the parameters is not found in static dimension list.
+        /// </summary>
+        internal static string ErrorMissingStaticDimensionTitle {
+            get {
+                return ResourceManager.GetString("ErrorMissingStaticDimensionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metric class cannot be in nested types.
         /// </summary>
         internal static string ErrorNestedTypeMessage {
@@ -237,49 +273,6 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         internal static string ErrorNotPartialMethodTitle {
             get {
                 return ResourceManager.GetString("ErrorNotPartialMethodTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        /// Looks up a localized string similar to A corresponding entry for parameter {0} is not found in static dimension list .
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionMessage
-        {
-            get
-            {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        /// Looks up a localized string similar to A corresponding entry for one of the parameters is not found in static dimension list.
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionTitle
-        {
-            get
-            {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        /// Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionParameterMessage
-        {
-            get
-            {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        /// Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionParameterTitle
-        {
-            get {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterTitle", resourceCulture);
             }
         }
     }

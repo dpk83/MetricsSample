@@ -121,7 +121,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             keepMethod = false;
                                         }
 
-                                        // bool isStatic = false;
+                                        bool isStatic = false;
                                         bool isPartial = false;
                                         foreach (var mod in method.Modifiers)
                                         {
@@ -132,12 +132,18 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                     break;
 
                                                 case "static":
-                                                    //isStatic = true;
+                                                    isStatic = true;
                                                     break;
                                             }
                                         }
 
                                         if (!isPartial)
+                                        {
+                                            Diag(DiagDescriptors.ErrorNotPartialMethod, method.GetLocation());
+                                            keepMethod = false;
+                                        }
+
+                                        if (!isStatic)
                                         {
                                             Diag(DiagDescriptors.ErrorNotPartialMethod, method.GetLocation());
                                             keepMethod = false;

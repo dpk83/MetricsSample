@@ -72,18 +72,17 @@ namespace MetricsBench
         {
             _meter = new GenevaMeter("testMeter", new MdmMetricFactory(), "testMonitoringAccount");
 
-            var meterOptions = _meter.MeterOptions;
-            var cumulativeMetric5D = meterOptions.MdmMetricFactory.CreateUInt64CumulativeMetric(
+            var cumulativeMetric5D = _meter.MdmMetricFactory.CreateUInt64CumulativeMetric(
                                         MdmMetricFlags.CumulativeMetricDefault,
-                                        meterOptions.MonitoringAccount,
-                                        meterOptions.MetricNamespace,
+                                        _meter.MonitoringAccount,
+                                        _meter.MetricNamespace,
                                         "counter5D",
                                         "k1", "k2", "k3", "k4", "k5");
 
-            var cumulativeMetric10D = meterOptions.MdmMetricFactory.CreateUInt64CumulativeMetric(
+            var cumulativeMetric10D = _meter.MdmMetricFactory.CreateUInt64CumulativeMetric(
                                         MdmMetricFlags.CumulativeMetricDefault,
-                                        meterOptions.MonitoringAccount,
-                                        meterOptions.MetricNamespace,
+                                        _meter.MonitoringAccount,
+                                        _meter.MetricNamespace,
                                         "counter5D",
                                         "k1", "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9", "k10");
 

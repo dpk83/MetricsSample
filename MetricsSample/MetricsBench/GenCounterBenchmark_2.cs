@@ -25,8 +25,8 @@ namespace MetricsBench
         public GenCounterBenchmark_2()
         {
             _meter = new GenevaMeter("testMeter", new MdmMetricFactory(), "testMonitoringAccount");
-            _counter5D = Metric.Create5dCounter(_meter, "v1", "v2", "v3", "v4", "v5");
-            _counter10D = Metric.Create10dCounter(_meter, "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10");
+            _counter5D = Metric.CreateCounter5D(_meter, "v1", "v2", "v3", "v4", "v5");
+            _counter10D = Metric.CreateCounter10D(_meter, "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10");
         }
 
         [Benchmark]

@@ -19,13 +19,6 @@ namespace Microsoft.R9.Extensions.Meter
         string this[string key] { set; }
     }
 
-    public struct MeterOptions
-    {
-        public MdmMetricFactory MdmMetricFactory;
-        public string MonitoringAccount;
-        public string MetricNamespace;
-    }
-
     public interface IMeter
     {
     }
@@ -36,13 +29,15 @@ namespace Microsoft.R9.Extensions.Meter.Geneva
     public partial class GenevaMeter : IMeter
     {
         // private readonly GeneratedCounterMetricFactory generatedCounterMetricFactory;
-        public readonly MeterOptions MeterOptions;
+        public MdmMetricFactory MdmMetricFactory { get; }
+        public string MonitoringAccount { get; }
+        public string MetricNamespace { get; }
 
         public GenevaMeter(string meterName, MdmMetricFactory mdmMetricFactory, string monitoringAccount)
         {
-            MeterOptions.MdmMetricFactory = mdmMetricFactory;
-            MeterOptions.MonitoringAccount = monitoringAccount;
-            MeterOptions.MetricNamespace = meterName;
+            MdmMetricFactory = mdmMetricFactory;
+            MonitoringAccount = monitoringAccount;
+            MetricNamespace = meterName;
         }
     }
 }

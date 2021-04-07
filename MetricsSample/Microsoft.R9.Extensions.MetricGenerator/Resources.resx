@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorInvalidMethodNameMessage" xml:space="preserve">
-    <value>Metric method names cannot start with _.</value>
+    <value>Metric method names cannot start with _</value>
   </data>
   <data name="ErrorInvalidMethodNameTitle" xml:space="preserve">
     <value>Metric method names cannot start with _</value>
@@ -148,10 +148,10 @@
     <value>Metric methods cannot be generic</value>
   </data>
   <data name="ErrorMetricNameReuseMessage" xml:space="preserve">
-    <value>Multiple metric instrument methods are using metric name {0}.</value>
+    <value>Multiple metric instrument methods are using metric name {0}</value>
   </data>
   <data name="ErrorMetricNameReuseTitle" xml:space="preserve">
-    <value>Multiple logging methods cannot use the same metric name.</value>
+    <value>Multiple logging methods cannot use the same metric name</value>
   </data>
   <data name="ErrorMissingMeterMessage" xml:space="preserve">
     <value>One of the arguments to a metric method must implement the Microsoft.R9.Extensions.Meter.IMeter interface</value>
@@ -164,6 +164,18 @@
   </data>
   <data name="ErrorMissingRequiredTypeTitle" xml:space="preserve">
     <value>Could not find a required type definition</value>
+  </data>
+  <data name="ErrorMissingStaticDimensionMessage" xml:space="preserve">
+    <value>A corresponding entry for parameter {0} is not found in static dimension list</value>
+  </data>
+  <data name="ErrorMissingStaticDimensionParameterMessage" xml:space="preserve">
+    <value>Parameter corresponding to one of the static dimensions is not provided in method signature</value>
+  </data>
+  <data name="ErrorMissingStaticDimensionParameterTitle" xml:space="preserve">
+    <value>Parameter corresponding to one of the static dimensions is not provided in method signature</value>
+  </data>
+  <data name="ErrorMissingStaticDimensionTitle" xml:space="preserve">
+    <value>A corresponding entry for one of the parameters is not found in static dimension list</value>
   </data>
   <data name="ErrorNestedTypeMessage" xml:space="preserve">
     <value>Metric class cannot be in nested types</value>

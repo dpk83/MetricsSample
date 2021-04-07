@@ -12,8 +12,8 @@ namespace MetricsBench
         static void Main(string[] args)
         {
             // Test1();
-            Test2();
-            //RunBenchmark(args);
+             // Test2();
+            RunBenchmark(args);
         }
 
         static void RunBenchmark(string[] args)
@@ -38,6 +38,7 @@ namespace MetricsBench
             string staticDimensions = string.Empty;
             var tokens = Regex.Split(staticDimensions, ",");
 
+            var b = new GenCounterBenchmark_3();
             var c = new GenCounterBenchmark_3();
             c.Add_Update3DimValueInEachCall_10DCounter();
         }

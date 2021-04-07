@@ -29,13 +29,13 @@ namespace MetricsBench
         public GenCounterBenchmark_3()
         {
             _meter = new GenevaMeter("testMeter", new MdmMetricFactory(), "testMonitoringAccount");
-            _counter5DNullDim = (Counter5DNullDim)Metric.Create5dCounterNullDim(_meter, "v1", "v2", "v3", "v4", "v5");
-            _counter5D1Change = (Counter5D1Change)Metric.Create5dCounter1Change(_meter, "v1", "v2", "v4", "v5");
-            _counter5D3Change = (Counter5D3Change)Metric.Create5dCounter3Change(_meter, "v1", "v4");
+            _counter5DNullDim = (Counter5DNullDim)Metric.CreateCounter5DNullDim(_meter, "v1", "v2", "v3", "v4", "v5");
+            _counter5D1Change = (Counter5D1Change)Metric.CreateCounter5D1Change(_meter, "v1", "v2", "v4", "v5");
+            _counter5D3Change = (Counter5D3Change)Metric.CreateCounter5D3Change(_meter, "v1", "v4");
 
-            _counter10D3Change = (Counter10D3Change)Metric.Create10dCounter3Change(_meter, "v1", "v4", "v6", "v7", "v8", "v9", "v10");
-            _counter10D5Change = (Counter10D5Change)Metric.Create10dCounter5Change(_meter, "v1", "v4", "v6", "v8", "v10");
-            _counter10D10Change = (Counter10D10Change)Metric.Create10dCounter10Change(_meter);
+            _counter10D3Change = (Counter10D3Change)Metric.CreateCounter10D3Change(_meter, "v1", "v4", "v6", "v7", "v8", "v9", "v10");
+            _counter10D5Change = (Counter10D5Change)Metric.CreateCounter10D5Change(_meter, "v1", "v4", "v6", "v8", "v10");
+            _counter10D10Change = (Counter10D10Change)Metric.CreateCounter10D10Change(_meter);
         }
 
         [Benchmark]

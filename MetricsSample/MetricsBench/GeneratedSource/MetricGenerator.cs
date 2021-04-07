@@ -15,73 +15,57 @@
         {
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create5dCounter(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k3, string k4, string k5)
+            public static partial Counter5D CreateCounter5D(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k3, string k4, string k5)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter5D(meterOptions, "Counter5D", k1, k2, k3, k4, k5);
+                return GeneratedCounterMetricFactory.CreateCounter5D(meter, k1, k2, k3, k4, k5);
             }
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create10dCounter(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k3, string k4, string k5, string k6, string k7, string k8, string k9, string k10)
+            public static partial Counter10D CreateCounter10D(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k3, string k4, string k5, string k6, string k7, string k8, string k9, string k10)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter10D(meterOptions, "Counter10D", k1, k2, k3, k4, k5, k6, k7, k8, k9, k10);
+                return GeneratedCounterMetricFactory.CreateCounter10D(meter, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10);
             }
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create5dCounterNullDim(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k3, string k4, string k5)
+            public static partial Counter5DNullDim CreateCounter5DNullDim(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k3, string k4, string k5)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter5DNullDim(meterOptions, "Counter5DNullDim", k1, k2, k3, k4, k5);
+                return GeneratedCounterMetricFactory.CreateCounter5DNullDim(meter, k1, k2, k3, k4, k5);
             }
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create5dCounter1Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k4, string k5)
+            public static partial Counter5D1Change CreateCounter5D1Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k2, string k4, string k5)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter5D1Change(meterOptions, "Counter5D1Change", k1, k2, k4, k5);
+                return GeneratedCounterMetricFactory.CreateCounter5D1Change(meter, k1, k2, k4, k5);
             }
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create5dCounter3Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k4)
+            public static partial Counter5D3Change CreateCounter5D3Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k4)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter5D3Change(meterOptions, "Counter5D3Change", k1, k4);
+                return GeneratedCounterMetricFactory.CreateCounter5D3Change(meter, k1, k4);
             }
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create10dCounter3Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k4, string k6, string k7, string k8, string k9, string k10)
+            public static partial Counter10D3Change CreateCounter10D3Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k4, string k6, string k7, string k8, string k9, string k10)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter10D3Change(meterOptions, "Counter10D3Change", k1, k4, k6, k7, k8, k9, k10);
+                return GeneratedCounterMetricFactory.CreateCounter10D3Change(meter, k1, k4, k6, k7, k8, k9, k10);
             }
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create10dCounter5Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k4, string k6, string k8, string k10)
+            public static partial Counter10D5Change CreateCounter10D5Change(Microsoft.R9.Extensions.Meter.IMeter meter, string k1, string k4, string k6, string k8, string k10)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter10D5Change(meterOptions, "Counter10D5Change", k1, k4, k6, k8, k10);
+                return GeneratedCounterMetricFactory.CreateCounter10D5Change(meter, k1, k4, k6, k8, k10);
             }
             
             [global::System.Runtime.CompilerServices.CompilerGenerated]
-            public static partial Microsoft.R9.Extensions.Meter.ICounterMetric<long> Create10dCounter10Change(Microsoft.R9.Extensions.Meter.IMeter meter)
+            public static partial Counter10D10Change CreateCounter10D10Change(Microsoft.R9.Extensions.Meter.IMeter meter)
             {
-                GenevaMeter genevaMeter = meter as GenevaMeter;
-                MeterOptions meterOptions = genevaMeter.MeterOptions;
-                return GeneratedCounterMetricFactory.CreateCounter10D10Change(meterOptions, "Counter10D10Change");
+                return GeneratedCounterMetricFactory.CreateCounter10D10Change(meter);
             }
             
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter5D : ICounterMetric<long>
+        public partial class Counter5D : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -131,6 +115,11 @@
             
             
 
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Add(long value)
             {
                 if (value != 0)
@@ -150,7 +139,7 @@
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter10D : ICounterMetric<long>
+        public partial class Counter10D : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -210,6 +199,11 @@
             
             
 
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Add(long value)
             {
                 if (value != 0)
@@ -229,7 +223,7 @@
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter5DNullDim : ICounterMetric<long>
+        public partial class Counter5DNullDim : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -279,6 +273,11 @@
             
             
 
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Add(long value)
             {
                 if (value != 0)
@@ -298,7 +297,7 @@
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter5D1Change : ICounterMetric<long>
+        public partial class Counter5D1Change : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -361,6 +360,11 @@
                 Add(value);
             }
 
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Add(long value)
             {
                 if (value != 0)
@@ -380,7 +384,7 @@
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter5D3Change : ICounterMetric<long>
+        public partial class Counter5D3Change : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -459,6 +463,11 @@
                 Add(value);
             }
 
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Add(long value)
             {
                 if (value != 0)
@@ -478,7 +487,7 @@
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter10D3Change : ICounterMetric<long>
+        public partial class Counter10D3Change : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -567,6 +576,11 @@
                 Add(value);
             }
 
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Add(long value)
             {
                 if (value != 0)
@@ -586,7 +600,7 @@
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter10D5Change : ICounterMetric<long>
+        public partial class Counter10D5Change : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -691,6 +705,11 @@
                 Add(value);
             }
 
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
+            }
+
             public void Add(long value)
             {
                 if (value != 0)
@@ -710,7 +729,7 @@
         }
         
         [global::System.Runtime.CompilerServices.CompilerGenerated]
-        public class Counter10D10Change : ICounterMetric<long>
+        public partial class Counter10D10Change : ICounterMetric<long>
         {
             private string[] _staticKeyArray;
             private string[] _staticValArray;
@@ -853,6 +872,11 @@
                 this.k7 = k7;
                 this.k9 = k9;
                 Add(value);
+            }
+
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
             }
 
             public void Add(long value)
