@@ -2,100 +2,108 @@
 
 namespace Microsoft.R9.Extensions.MetricGenerator
 {
-    internal static class DiagDescriptors
+    internal static class MetricDiagDescriptors
     {
         public static DiagnosticDescriptor ErrorInvalidMethodName { get; } = new(
-            id: "MG0000",
-            title: Resources.ErrorInvalidMethodNameTitle,
-            messageFormat: Resources.ErrorInvalidMethodNameMessage,
+            id: "R9MG0000",
+            title: MetricResources.ErrorInvalidMethodNameTitle,
+            messageFormat: MetricResources.ErrorInvalidMethodNameMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorInvalidParameterName { get; } = new(
-            id: "MG0001",
-            title: Resources.ErrorInvalidParameterNameTitle,
-            messageFormat: Resources.ErrorInvalidParameterNameMessage,
+            id: "R9MG0001",
+            title: MetricResources.ErrorInvalidParameterNameTitle,
+            messageFormat: MetricResources.ErrorInvalidParameterNameMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorNestedType { get; } = new(
-            id: "MG0002",
-            title: Resources.ErrorNestedTypeTitle,
-            messageFormat: Resources.ErrorNestedTypeMessage,
+            id: "R9MG0002",
+            title: MetricResources.ErrorNestedTypeTitle,
+            messageFormat: MetricResources.ErrorNestedTypeMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMissingRequiredType { get; } = new(
-            id: "MG0003",
-            title: Resources.ErrorMissingRequiredTypeTitle,
-            messageFormat: Resources.ErrorMissingRequiredTypeMessage,
+            id: "R9MG0003",
+            title: MetricResources.ErrorMissingRequiredTypeTitle,
+            messageFormat: MetricResources.ErrorMissingRequiredTypeMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMetricNameReuse { get; } = new(
-            id: "MG0004",
-            title: Resources.ErrorMetricNameReuseTitle,
-            messageFormat: Resources.ErrorMetricNameReuseMessage,
+            id: "R9MG0004",
+            title: MetricResources.ErrorMetricNameReuseTitle,
+            messageFormat: MetricResources.ErrorMetricNameReuseMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorInvalidMethodReturnType { get; } = new(
-            id: "MG0005",
-            title: Resources.ErrorInvalidMethodReturnTypeTitle,
-            messageFormat: Resources.ErrorInvalidMethodReturnTypeMessage,
+            id: "R9MG0005",
+            title: MetricResources.ErrorInvalidMethodReturnTypeTitle,
+            messageFormat: MetricResources.ErrorInvalidMethodReturnTypeMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMissingMeter { get; } = new(
-            id: "MG0006",
-            title: Resources.ErrorMissingMeterTitle,
-            messageFormat: Resources.ErrorMissingMeterMessage,
+            id: "R9MG0006",
+            title: MetricResources.ErrorMissingMeterTitle,
+            messageFormat: MetricResources.ErrorMissingMeterMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorNotPartialMethod { get; } = new(
-            id: "MG0007",
-            title: Resources.ErrorNotPartialMethodTitle,
-            messageFormat: Resources.ErrorNotPartialMethodMessage,
+            id: "R9MG0007",
+            title: MetricResources.ErrorNotPartialMethodTitle,
+            messageFormat: MetricResources.ErrorNotPartialMethodMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMethodIsGeneric { get; } = new(
-            id: "MG0008",
-            title: Resources.ErrorMethodIsGenericTitle,
-            messageFormat: Resources.ErrorMethodIsGenericMessage,
+            id: "R9MG0008",
+            title: MetricResources.ErrorMethodIsGenericTitle,
+            messageFormat: MetricResources.ErrorMethodIsGenericMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMethodHasBody { get; } = new(
-            id: "MG0009",
-            title: Resources.ErrorMethodHasBodyTitle,
-            messageFormat: Resources.ErrorMethodHasBodyMessage,
+            id: "R9MG0009",
+            title: MetricResources.ErrorMethodHasBodyTitle,
+            messageFormat: MetricResources.ErrorMethodHasBodyMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMissingStaticDimension { get; } = new(
-            id: "MG0010",
-            title: Resources.ErrorMissingStaticDimensionParameterTitle,
-            messageFormat: Resources.ErrorMissingStaticDimensionParameterMessage,
+            id: "R9MG0010",
+            title: MetricResources.ErrorMissingStaticDimensionParameterTitle,
+            messageFormat: MetricResources.ErrorMissingStaticDimensionParameterMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
         public static DiagnosticDescriptor ErrorMissingStaticDimensionParameter { get; } = new(
-            id: "MG0011",
-            title: Resources.ErrorMissingStaticDimensionTitle,
-            messageFormat: Resources.ErrorMissingStaticDimensionMessage,
+            id: "R9MG0011",
+            title: MetricResources.ErrorMissingStaticDimensionTitle,
+            messageFormat: MetricResources.ErrorMissingStaticDimensionMessage,
+            category: "MetricGenerator",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
+        public static DiagnosticDescriptor ErrorNotStaticMethod { get; } = new(
+            id: "R9MG0012",
+            title: MetricResources.ErrorNotStaticMethodTitle,
+            messageFormat: MetricResources.ErrorNotStaticMethodMessage,
             category: "MetricGenerator",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);

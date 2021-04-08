@@ -7,16 +7,13 @@ namespace Microsoft.R9.Extensions.Meter
     public interface ICounterMetric<in T>
         where T : struct
     {
-        void Add(T value);
-
-        string this[string key] { set; }
+        void Add(T value, IList<(string key, string value)>? dimensions);
     }
 
     public interface IValueRecorderMetric<in T>
         where T : struct
     {
-        void Record(T value);
-        string this[string key] { set; }
+        void Record(T value, IList<(string key, string value)>? dimensions);
     }
 
     public interface IMeter

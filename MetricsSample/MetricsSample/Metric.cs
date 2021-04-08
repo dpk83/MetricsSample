@@ -1,4 +1,5 @@
 ﻿using Microsoft.R9.Extensions.Meter;
+using Microsoft.R9.Extensions.MetricUtilities;
 
 namespace MetricsSample
 {

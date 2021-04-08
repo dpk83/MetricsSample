@@ -20,10 +20,10 @@
                 string metricName = "RequestCounter";
                 if (_longCounterMetrics.TryGetValue(metricName, out var counterMetric))
                 {
-                    return counterMetric as RequestCounter;
+                    return (counterMetric as RequestCounter)!;
                 }
 
-                GenevaMeter genevaMeter = meter as GenevaMeter;
+                GenevaMeter genevaMeter = (meter as GenevaMeter)!;
 
                 var metric = _longCounterMetrics.GetOrAdd(metricName, (key) => {
                     var cumulativeMetric = genevaMeter.MdmMetricFactory.CreateUInt64CumulativeMetric(
@@ -37,7 +37,7 @@
                     return new RequestCounter(cumulativeMetric, env, host, region);
                 });
 
-                return metric as RequestCounter;
+                return (metric as RequestCounter)!;
             }
 
         }

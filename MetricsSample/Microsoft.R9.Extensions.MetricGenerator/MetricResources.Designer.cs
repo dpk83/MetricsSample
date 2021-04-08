@@ -22,14 +22,14 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class MetricResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal MetricResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.R9.Extensions.MetricGenerator.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.R9.Extensions.MetricGenerator.MetricResources", typeof(MetricResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -273,6 +273,24 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         internal static string ErrorNotPartialMethodTitle {
             get {
                 return ResourceManager.GetString("ErrorNotPartialMethodTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric methods must be static.
+        /// </summary>
+        internal static string ErrorNotStaticMethodMessage {
+            get {
+                return ResourceManager.GetString("ErrorNotStaticMethodMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric methods must be static.
+        /// </summary>
+        internal static string ErrorNotStaticMethodTitle {
+            get {
+                return ResourceManager.GetString("ErrorNotStaticMethodTitle", resourceCulture);
             }
         }
     }

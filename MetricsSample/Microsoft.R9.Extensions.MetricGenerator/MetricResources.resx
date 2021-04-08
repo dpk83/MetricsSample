@@ -189,4 +189,10 @@
   <data name="ErrorNotPartialMethodTitle" xml:space="preserve">
     <value>Metric methods must be partial</value>
   </data>
+  <data name="ErrorNotStaticMethodMessage" xml:space="preserve">
+    <value>Metric methods must be static</value>
+  </data>
+  <data name="ErrorNotStaticMethodTitle" xml:space="preserve">
+    <value>Metric methods must be static</value>
+  </data>
 </root>

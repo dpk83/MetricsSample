@@ -46,7 +46,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 var meterSymbol = _compilation.GetTypeByMetadataName("Microsoft.R9.Extensions.Meter.IMeter");
                 if (meterSymbol == null)
                 {
-                    Diag(DiagDescriptors.ErrorMissingRequiredType, null, "Microsoft.R9.Extensions.Meter.IMeter");
+                    Diag(MetricDiagDescriptors.ErrorMissingRequiredType, null, "Microsoft.R9.Extensions.Meter.IMeter");
                     return Array.Empty<MetricInstrumentClass>();
                 }
 
@@ -106,7 +106,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                         {
                                             Name = method.Identifier.ToString(),
                                             MetricName = metricName,
-                                            instrumentType = isCounterAttribute ? InstrumentType.Counter : InstrumentType.ValueRecorder,
+                                            InstrumentType = isCounterAttribute ? InstrumentType.Counter : InstrumentType.ValueRecorder,
                                             StaticDimensions = GetDimensionsList(staticDim),
                                             DynamicDimensions = GetDimensionsList(dynamicDim),
                                             IsExtensionMethod = methodSymbol.IsExtensionMethod,
@@ -114,27 +114,26 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             InstrumentClassType = semanticModel.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
                                         };
 
-
                                         bool keepMethod = true;
                                         if (metricInstrumentMethod.Name[0] == '_')
                                         {
                                             // can't have logging method names that start with _ since that can lead to conflicting symbol names
                                             // because the generated symbols start with _
-                                            Diag(DiagDescriptors.ErrorInvalidMethodName, method.Identifier.GetLocation());
+                                            Diag(MetricDiagDescriptors.ErrorInvalidMethodName, method.Identifier.GetLocation());
                                             keepMethod = false;
                                         }
 
-                                        if (semanticModel.GetTypeInfo(method.ReturnType!).Type!.SpecialType != SpecialType.None) //!= SpecialType.System_Void)
+                                        if (semanticModel.GetTypeInfo(method.ReturnType!).Type!.SpecialType != SpecialType.None)
                                         {
                                             // Make sure return type is not from existing none type
-                                            Diag(DiagDescriptors.ErrorInvalidMethodReturnType, method.ReturnType.GetLocation());
+                                            Diag(MetricDiagDescriptors.ErrorInvalidMethodReturnType, method.ReturnType.GetLocation());
                                             keepMethod = false;
                                         }
 
                                         if (method.Arity > 0)
                                         {
                                             // we don't currently support generic methods
-                                            Diag(DiagDescriptors.ErrorMethodIsGeneric, method.Identifier.GetLocation());
+                                            Diag(MetricDiagDescriptors.ErrorMethodIsGeneric, method.Identifier.GetLocation());
                                             keepMethod = false;
                                         }
 
@@ -156,34 +155,34 @@ namespace Microsoft.R9.Extensions.MetricGenerator
 
                                         if (!isPartial)
                                         {
-                                            Diag(DiagDescriptors.ErrorNotPartialMethod, method.GetLocation());
+                                            Diag(MetricDiagDescriptors.ErrorNotPartialMethod, method.GetLocation());
                                             keepMethod = false;
                                         }
 
                                         if (!isStatic)
                                         {
-                                            Diag(DiagDescriptors.ErrorNotPartialMethod, method.GetLocation());
+                                            Diag(MetricDiagDescriptors.ErrorNotStaticMethod, method.GetLocation());
                                             keepMethod = false;
                                         }
 
                                         if (method.Body != null)
                                         {
-                                            Diag(DiagDescriptors.ErrorMethodHasBody, method.Body.GetLocation());
+                                            Diag(MetricDiagDescriptors.ErrorMethodHasBody, method.Body.GetLocation());
                                             keepMethod = false;
                                         }
 
-#pragma warning disable CS8604 // Possible null reference argument.
                                         // ensure there are no duplicate ids.
                                         if (string.IsNullOrWhiteSpace(metricInstrumentMethod.MetricName) ||
                                             metricNames.Contains(metricInstrumentMethod.MetricName!))
                                         {
-                                            Diag(DiagDescriptors.ErrorMetricNameReuse, methodAttribute.GetLocation(), metricInstrumentMethod.MetricName);
+                                            Diag(MetricDiagDescriptors.ErrorMetricNameReuse, methodAttribute.GetLocation(), metricInstrumentMethod.MetricName);
                                         }
                                         else
                                         {
+#pragma warning disable CS8604 // Possible null reference argument.
                                             _ = metricNames.Add(metricInstrumentMethod.MetricName);
-                                        }
 #pragma warning restore CS8604 // Possible null reference argument.
+                                        }
 
                                         bool foundMeter = false;
                                         foreach (var parameter in method.ParameterList.Parameters)
@@ -221,7 +220,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             {
                                                 // can't have method parameter names that start with _ since that can lead to conflicting symbol names
                                                 // because all generated symbols start with _
-                                                Diag(DiagDescriptors.ErrorInvalidParameterName, parameter.Identifier.GetLocation());
+                                                Diag(MetricDiagDescriptors.ErrorInvalidParameterName, parameter.Identifier.GetLocation());
                                             }
 
                                             metricInstrumentMethod.AllParameters.Add(meterParameter);
@@ -235,7 +234,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             {
                                                 if (!foundMeter)
                                                 {
-                                                    Diag(DiagDescriptors.ErrorMissingMeter, method.GetLocation());
+                                                    Diag(MetricDiagDescriptors.ErrorMissingMeter, method.GetLocation());
                                                     keepMethod = false;
                                                 }
                                             }
@@ -249,7 +248,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                                     if (classDeclaration.Parent is not CompilationUnitSyntax)
                                                     {
                                                         // since this generator doesn't know how to generate a nested type...
-                                                        Diag(DiagDescriptors.ErrorNestedType, classDeclaration.Identifier.GetLocation());
+                                                        Diag(MetricDiagDescriptors.ErrorNestedType, classDeclaration.Identifier.GetLocation());
                                                         keepMethod = false;
                                                     }
                                                 }
@@ -270,22 +269,24 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                                             }
                                         }
 
-                                        foreach(var param in metricInstrumentMethod.RegularParameters)
+                                        foreach (var param in metricInstrumentMethod.RegularParameters)
                                         {
+#pragma warning disable CPR102 // Use HashSet.Contains instead of List.Contains
                                             if (!metricInstrumentMethod.StaticDimensions.Contains(param.Name))
+#pragma warning restore CPR102 // Use HashSet.Contains instead of List.Contains
                                             {
                                                 // Report error, all dimenions passed to the method should be static dimensions
                                                 // and should be provided as StaticDimensions in the attribute
-                                                Diag(DiagDescriptors.ErrorMissingStaticDimension, method.GetLocation(), param.Name);
+                                                Diag(MetricDiagDescriptors.ErrorMissingStaticDimension, method.GetLocation(), param.Name);
                                                 keepMethod = false;
                                             }
                                         }
 
                                         if (metricInstrumentMethod.RegularParameters.Count != metricInstrumentMethod.StaticDimensions.Count)
                                         {
-                                            // report error, all dimensions passed in attribute as static dimensions should be 
+                                            // report error, all dimensions passed in attribute as static dimensions should be
                                             // passed as string parameters to the method
-                                            Diag(DiagDescriptors.ErrorMissingStaticDimension, method.GetLocation());
+                                            Diag(MetricDiagDescriptors.ErrorMissingStaticDimension, method.GetLocation());
                                             keepMethod = false;
                                         }
 
@@ -316,6 +317,16 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 return results;
             }
 
+            private static List<string> GetDimensionsList(string dimensionListString)
+            {
+                if (string.IsNullOrWhiteSpace(dimensionListString))
+                {
+                    return new();
+                }
+
+                var dimensionTokens = Regex.Split(dimensionListString, ",");
+                return new List<string>(dimensionTokens);
+            }
 
             private bool IsBaseOrIdentity(ITypeSymbol source, ITypeSymbol dest)
             {
@@ -339,33 +350,28 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                     {
                         staticDim = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
                     }
+#pragma warning disable S109 // Magic numbers should not be used
                     else if (index == 2)
+#pragma warning restore S109 // Magic numbers should not be used
                     {
                         dynamicDim = (string)sm.GetConstantValue(arg.Expression, _cancellationToken).Value!;
                     }
+
                     index++;
                 }
 
                 return (metricName, staticDim, dynamicDim);
             }
 
+#pragma warning disable SA1011 // Closing square brackets should be spaced correctly
             private void Diag(DiagnosticDescriptor desc, Location? location, params object?[]? messageArgs)
+#pragma warning restore SA1011 // Closing square brackets should be spaced correctly
             {
                 _reportDiagnostic(Diagnostic.Create(desc, location, messageArgs));
             }
-
-            private List<string> GetDimensionsList(string dimensionListString)
-            {
-                if (string.IsNullOrWhiteSpace(dimensionListString))
-                {
-                    return new();
-                }
-
-                var dimensionTokens = Regex.Split(dimensionListString, ",");
-                return new List<string>(dimensionTokens);
-            }
         }
 
+#pragma warning disable SA1401 // Fields should be private
         internal class MetricInstrumentClass
         {
             public readonly List<MetricInstrumentMethod> Methods = new();
@@ -385,21 +391,22 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             public bool IsExtensionMethod;
             public string Modifiers = string.Empty;
             public string InstrumentClassType = string.Empty;
-            public InstrumentType instrumentType;
+            public InstrumentType InstrumentType;
         }
 
         internal class MetricInstrumentParameter
         {
             public string Name = string.Empty;
             public string Type = string.Empty;
-            public bool IsMeter = false;
+            public bool IsMeter;
             public bool IsRegular => !IsMeter;
         }
 
         internal enum InstrumentType
-        { 
+        {
             Counter = 0,
             ValueRecorder = 1
         }
+#pragma warning restore SA1401 // Fields should be private
     }
 }

@@ -55,54 +55,28 @@
                 _staticValArray[2] = region;
 
                 _dynamicKeyArray[0] = "tenantId";
-                _dynamicValArray[0] = tenantId;
 
                 _dynamicKeyArray[1] = "requestName";
-                _dynamicValArray[1] = requestName;
             }
             
-            public string tenantId
+            private string tenantId
             {
                 get => _dynamicValArray[0];
                 set { if (_dynamicValArray[0] != value) { _dynamicValArray[0] = value; _isDirty = true; } }
             }
-            public string requestName
+            private string requestName
             {
                 get => _dynamicValArray[1];
                 set { if (_dynamicValArray[1] != value) { _dynamicValArray[1] = value; _isDirty = true; } }
             }
-            public string this[string key]
-            {
-                set
-                {
-                    switch(key)
-                    {
-
-                        case "tenantId": tenantId = value;return;
-                        case "requestName": requestName = value;return;
-                        default: throw new ArgumentOutOfRangeException(nameof(key));
-                    }
-                }
-            }
-            
             
             public void Add(long value, string tenantId, string requestName)
             {
-                
-                this.tenantId = tenantId;
-                this.requestName = requestName;
-                Add(value);
-            }
-
-            public void Add(long value, IList<(string key, string value)>? dimensions)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Add(long value)
-            {
                 if (value != 0)
                 {
+                    
+                    this.tenantId = tenantId;
+                    this.requestName = requestName;
                     if (_isDirty)
                     {
                         _defaultDimensionValues = DimensionValues.Create(_staticValArray[0], _staticValArray[1], _staticValArray[2], _dynamicValArray[0], _dynamicValArray[1]);
@@ -114,6 +88,11 @@
                             : CumulativeMetric.DecrementBy((ulong)value, _defaultDimensionValues);
                         
                 }
+            }
+
+            public void Add(long value, IList<(string key, string value)>? dimensions)
+            {
+                throw new NotImplementedException();
             }
             
         }
