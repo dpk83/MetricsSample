@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorConflictingDimensionMessage" xml:space="preserve">
+    <value>Parameter names conflicts with the dynamic dimensions in the attribute arguments</value>
+  </data>
+  <data name="ErrorConflictingDimensionTitle" xml:space="preserve">
+    <value>Parameter names conflicts with the dynamic dimensions in the attribute arguments</value>
+  </data>
+  <data name="ErrorInvalidDimensionNamesMessage" xml:space="preserve">
+    <value>Dimension names should contain alphanumeric characters and only allowed symbols</value>
+  </data>
+  <data name="ErrorInvalidDimensionNamesTitle" xml:space="preserve">
+    <value>Dimension names should contain alphanumeric characters and only allowed symbols</value>
+  </data>
   <data name="ErrorInvalidMethodNameMessage" xml:space="preserve">
     <value>Metric method names cannot start with _</value>
   </data>
@@ -124,10 +136,16 @@
     <value>Metric method names cannot start with _</value>
   </data>
   <data name="ErrorInvalidMethodReturnTypeMessage" xml:space="preserve">
-    <value>Metric methods must return void</value>
+    <value>Metric methods must return {0} type</value>
   </data>
   <data name="ErrorInvalidMethodReturnTypeTitle" xml:space="preserve">
-    <value>Metric methods must return void</value>
+    <value>Metric methods must return strong type</value>
+  </data>
+  <data name="ErrorInvalidMetricNameMessage" xml:space="preserve">
+    <value>Metric name {0} is invalid. It must be non empty and start with an alphabetic character</value>
+  </data>
+  <data name="ErrorInvalidMetricNameTitle" xml:space="preserve">
+    <value>Metric name must be non empty and start with an alphabetic character</value>
   </data>
   <data name="ErrorInvalidParameterNameMessage" xml:space="preserve">
     <value>Metric method parameter names cannot start with _</value>
@@ -151,31 +169,19 @@
     <value>Multiple metric instrument methods are using metric name {0}</value>
   </data>
   <data name="ErrorMetricNameReuseTitle" xml:space="preserve">
-    <value>Multiple logging methods cannot use the same metric name</value>
+    <value>Multiple metric methods cannot use the same metric name</value>
+  </data>
+  <data name="ErrorMismatchingStaticDimensionsCountMessage" xml:space="preserve">
+    <value>Each key in StaticDimension argument should have corresponding parameter</value>
+  </data>
+  <data name="ErrorMismatchingStaticDimensionsCountTitle" xml:space="preserve">
+    <value>Each key in StaticDimension argument should have corresponding parameter</value>
   </data>
   <data name="ErrorMissingMeterMessage" xml:space="preserve">
-    <value>One of the arguments to a metric method must implement the Microsoft.R9.Extensions.Meter.IMeter interface</value>
+    <value>First parameter should be of Microsoft.R9.Extensions.Meter.IMeter type</value>
   </data>
   <data name="ErrorMissingMeterTitle" xml:space="preserve">
-    <value>One of the arguments to a metric method must implement the Microsoft.R9.Extensions.Meter.IMeter interface</value>
-  </data>
-  <data name="ErrorMissingRequiredTypeMessage" xml:space="preserve">
-    <value>Could not find definition for type {0}</value>
-  </data>
-  <data name="ErrorMissingRequiredTypeTitle" xml:space="preserve">
-    <value>Could not find a required type definition</value>
-  </data>
-  <data name="ErrorMissingStaticDimensionMessage" xml:space="preserve">
-    <value>A corresponding entry for parameter {0} is not found in static dimension list</value>
-  </data>
-  <data name="ErrorMissingStaticDimensionParameterMessage" xml:space="preserve">
-    <value>Parameter corresponding to one of the static dimensions is not provided in method signature</value>
-  </data>
-  <data name="ErrorMissingStaticDimensionParameterTitle" xml:space="preserve">
-    <value>Parameter corresponding to one of the static dimensions is not provided in method signature</value>
-  </data>
-  <data name="ErrorMissingStaticDimensionTitle" xml:space="preserve">
-    <value>A corresponding entry for one of the parameters is not found in static dimension list</value>
+    <value>First parameter should be of Microsoft.R9.Extensions.Meter.IMeter type</value>
   </data>
   <data name="ErrorNestedTypeMessage" xml:space="preserve">
     <value>Metric class cannot be in nested types</value>

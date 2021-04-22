@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions
+﻿namespace Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions
 {
     public interface IMdmMetric<in TDim, in TValue>
         where TDim : IFixedStringsArray
@@ -125,7 +121,8 @@ namespace Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions
 
     public enum MdmMetricFlags
     {
-        CumulativeMetricDefault = 0
+        CumulativeMetricDefault = 0,
+        IncludeDefaultDimensions = 1
     }
 
     public interface IFixedStringsArray

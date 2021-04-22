@@ -5,32 +5,15 @@
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <IncludeSGenFilesOutputGroup></IncludeSGenFilesOutputGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
-  <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
-    <ItemGroup>
-      <Compile Include="Generated\**" />
-    </ItemGroup>
-  </Target>
-  
-  <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
-    <ItemGroup>
-      <Compile Remove="Generated\**" />
-    </ItemGroup>
-  </Target>
-
-  <Target Name="CleanSourceGeneratedFiles" AfterTargets="Clean">
-    <RemoveDir Directories="Generated" />
-  </Target>
-  
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Include="MakeConst" Version="1.0.0" />
+    <PackageReference Include="GenevaMonitoringAgent" Version="44.9.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <ProjectReference Include="..\Microsoft.R9.Extensions.MetricUtilities\Microsoft.R9.Extensions.MetricUtilities.csproj" />
     <ProjectReference Include="..\Microsoft.R9.Extensions.MetricGenerator\Microsoft.R9.Extensions.MetricGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />

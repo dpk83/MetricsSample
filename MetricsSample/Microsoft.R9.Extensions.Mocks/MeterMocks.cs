@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
 using System.Collections.Generic;
-using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
 
 namespace Microsoft.R9.Extensions.Meter
 {
@@ -35,21 +34,6 @@ namespace Microsoft.R9.Extensions.Meter.Geneva
             MdmMetricFactory = mdmMetricFactory;
             MonitoringAccount = monitoringAccount;
             MetricNamespace = meterName;
-        }
-    }
-}
-
-
-namespace Temp
-{
-    public class T1
-    { 
-        public string this[string key]
-        {
-            set
-            { 
-            
-            }
         }
     }
 }

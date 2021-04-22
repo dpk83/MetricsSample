@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.R9.Extensions.MetricGenerator {
+namespace Microsoft.R9.Generators.Metric {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MetricResources {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MetricResources() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.R9.Extensions.MetricGenerator.MetricResources", typeof(MetricResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.R9.Generators.Metric.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,42 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter names conflicts with the dynamic dimensions in the attribute arguments.
+        /// </summary>
+        internal static string ErrorConflictingDimensionMessage {
+            get {
+                return ResourceManager.GetString("ErrorConflictingDimensionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter names conflicts with the dynamic dimensions in the attribute arguments.
+        /// </summary>
+        internal static string ErrorConflictingDimensionTitle {
+            get {
+                return ResourceManager.GetString("ErrorConflictingDimensionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimension names should contain alphanumeric characters and only allowed symbols.
+        /// </summary>
+        internal static string ErrorInvalidDimensionNamesMessage {
+            get {
+                return ResourceManager.GetString("ErrorInvalidDimensionNamesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimension names should contain alphanumeric characters and only allowed symbols.
+        /// </summary>
+        internal static string ErrorInvalidDimensionNamesTitle {
+            get {
+                return ResourceManager.GetString("ErrorInvalidDimensionNamesTitle", resourceCulture);
             }
         }
         
@@ -79,7 +115,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metric methods must return void.
+        ///   Looks up a localized string similar to Metric methods must return {0} type.
         /// </summary>
         internal static string ErrorInvalidMethodReturnTypeMessage {
             get {
@@ -88,11 +124,29 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metric methods must return void.
+        ///   Looks up a localized string similar to Metric methods must return strong type.
         /// </summary>
         internal static string ErrorInvalidMethodReturnTypeTitle {
             get {
                 return ResourceManager.GetString("ErrorInvalidMethodReturnTypeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric name {0} is invalid. It must be non empty and start with an alphabetic character.
+        /// </summary>
+        internal static string ErrorInvalidMetricNameMessage {
+            get {
+                return ResourceManager.GetString("ErrorInvalidMetricNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric name must be non empty and start with an alphabetic character.
+        /// </summary>
+        internal static string ErrorInvalidMetricNameTitle {
+            get {
+                return ResourceManager.GetString("ErrorInvalidMetricNameTitle", resourceCulture);
             }
         }
         
@@ -160,7 +214,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple logging methods cannot use the same metric name.
+        ///   Looks up a localized string similar to Multiple metric methods cannot use the same metric name.
         /// </summary>
         internal static string ErrorMetricNameReuseTitle {
             get {
@@ -169,7 +223,25 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One of the arguments to a metric method must implement the Microsoft.R9.Extensions.Meter.IMeter interface.
+        ///   Looks up a localized string similar to Each key in StaticDimension argument should have corresponding parameter.
+        /// </summary>
+        internal static string ErrorMismatchingStaticDimensionsCountMessage {
+            get {
+                return ResourceManager.GetString("ErrorMismatchingStaticDimensionsCountMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each key in StaticDimension argument should have corresponding parameter.
+        /// </summary>
+        internal static string ErrorMismatchingStaticDimensionsCountTitle {
+            get {
+                return ResourceManager.GetString("ErrorMismatchingStaticDimensionsCountTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First parameter should be of Microsoft.R9.Extensions.Meter.IMeter type.
         /// </summary>
         internal static string ErrorMissingMeterMessage {
             get {
@@ -178,65 +250,11 @@ namespace Microsoft.R9.Extensions.MetricGenerator {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One of the arguments to a metric method must implement the Microsoft.R9.Extensions.Meter.IMeter interface.
+        ///   Looks up a localized string similar to First parameter should be of Microsoft.R9.Extensions.Meter.IMeter type.
         /// </summary>
         internal static string ErrorMissingMeterTitle {
             get {
                 return ResourceManager.GetString("ErrorMissingMeterTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not find definition for type {0}.
-        /// </summary>
-        internal static string ErrorMissingRequiredTypeMessage {
-            get {
-                return ResourceManager.GetString("ErrorMissingRequiredTypeMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not find a required type definition.
-        /// </summary>
-        internal static string ErrorMissingRequiredTypeTitle {
-            get {
-                return ResourceManager.GetString("ErrorMissingRequiredTypeTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A corresponding entry for parameter {0} is not found in static dimension list.
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionMessage {
-            get {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionParameterMessage {
-            get {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parameter corresponding to one of the static dimensions is not provided in method signature.
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionParameterTitle {
-            get {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionParameterTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A corresponding entry for one of the parameters is not found in static dimension list.
-        /// </summary>
-        internal static string ErrorMissingStaticDimensionTitle {
-            get {
-                return ResourceManager.GetString("ErrorMissingStaticDimensionTitle", resourceCulture);
             }
         }
         

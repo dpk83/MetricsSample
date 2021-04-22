@@ -1,15 +1,16 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System;
+﻿// © Microsoft Corporation. All rights reserved.
+
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
-namespace Microsoft.R9.Extensions.MetricGenerator
+namespace Microsoft.R9.Generators.Metric
 {
     [Generator]
-    public partial class MetricGenerator : ISourceGenerator
+    public class Generator : ISourceGenerator
     {
         [ExcludeFromCodeCoverage]
         public void Initialize(GeneratorInitializationContext context)
@@ -28,20 +29,18 @@ namespace Microsoft.R9.Extensions.MetricGenerator
             }
 
             var parser = new Parser(context.Compilation, context.ReportDiagnostic, context.CancellationToken);
-            var emitter = new Emitter();
-
             var counterClasses = parser.GetCounterClasses(receiver.ClassDeclarations);
-            // var result = emitter.Emit(counterClasses, context.CancellationToken);
-            // context.AddSource(nameof(MetricGenerator), SourceText.From(result, Encoding.UTF8));
 
-            //var meterInterface = emitter.EmitMeterInterface(counterClasses, context.CancellationToken);
-            //context.AddSource("GeneratedMeterInterface", SourceText.From(meterInterface, Encoding.UTF8));
+            if (counterClasses.Count > 0)
+            {
+                var emitter = new Emitter();
 
-            var genevaMeter = emitter.EmitGenevaMeter(counterClasses, context.CancellationToken);
-            context.AddSource("GeneratedGenevaMeter.SourceGenerated", SourceText.From(genevaMeter, Encoding.UTF8));
+                var genevaMeter = emitter.EmitGenevaMeter(counterClasses, context.CancellationToken);
+                context.AddSource("GeneratedGenevaMeter", SourceText.From(genevaMeter, Encoding.UTF8));
 
-            var metricInstruments = emitter.EmitMetricInstruments(counterClasses, context.CancellationToken);
-            context.AddSource("MetricGenerator.SourceGenerated", SourceText.From(metricInstruments, Encoding.UTF8));
+                var metricInstruments = emitter.EmitMetricInstruments(counterClasses, context.CancellationToken);
+                context.AddSource("Metric", SourceText.From(metricInstruments, Encoding.UTF8));
+            }
         }
 
         [ExcludeFromCodeCoverage]
@@ -52,7 +51,7 @@ namespace Microsoft.R9.Extensions.MetricGenerator
                 return new SyntaxReceiver();
             }
 
-            public List<ClassDeclarationSyntax> ClassDeclarations { get; } = new();
+            public List<ClassDeclarationSyntax> ClassDeclarations { get; } = new ();
 
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {

@@ -1,111 +1,137 @@
-﻿using Microsoft.CodeAnalysis;
+﻿// © Microsoft Corporation. All rights reserved.
 
-namespace Microsoft.R9.Extensions.MetricGenerator
+using Microsoft.CodeAnalysis;
+
+namespace Microsoft.R9.Generators.Metric
 {
-    internal static class MetricDiagDescriptors
+    internal static class DiagDescriptors
     {
-        public static DiagnosticDescriptor ErrorInvalidMethodName { get; } = new(
-            id: "R9MG0000",
-            title: MetricResources.ErrorInvalidMethodNameTitle,
-            messageFormat: MetricResources.ErrorInvalidMethodNameMessage,
-            category: "MetricGenerator",
+        private const string _category = "Metric";
+
+        public static DiagnosticDescriptor ErrorInvalidMethodName { get; } = new (
+            id: "R9G050",
+            title: Resources.ErrorInvalidMethodNameTitle,
+            messageFormat: Resources.ErrorInvalidMethodNameMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g050",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorInvalidParameterName { get; } = new(
-            id: "R9MG0001",
-            title: MetricResources.ErrorInvalidParameterNameTitle,
-            messageFormat: MetricResources.ErrorInvalidParameterNameMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorInvalidParameterName { get; } = new (
+            id: "R9G051",
+            title: Resources.ErrorInvalidParameterNameTitle,
+            messageFormat: Resources.ErrorInvalidParameterNameMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g051",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorNestedType { get; } = new(
-            id: "R9MG0002",
-            title: MetricResources.ErrorNestedTypeTitle,
-            messageFormat: MetricResources.ErrorNestedTypeMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorNestedType { get; } = new (
+            id: "R9G052",
+            title: Resources.ErrorNestedTypeTitle,
+            messageFormat: Resources.ErrorNestedTypeMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g052",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMissingRequiredType { get; } = new(
-            id: "R9MG0003",
-            title: MetricResources.ErrorMissingRequiredTypeTitle,
-            messageFormat: MetricResources.ErrorMissingRequiredTypeMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorInvalidMetricName { get; } = new (
+            id: "R9G053",
+            title: Resources.ErrorInvalidMetricNameTitle,
+            messageFormat: Resources.ErrorInvalidMetricNameMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g053",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMetricNameReuse { get; } = new(
-            id: "R9MG0004",
-            title: MetricResources.ErrorMetricNameReuseTitle,
-            messageFormat: MetricResources.ErrorMetricNameReuseMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorMetricNameReuse { get; } = new (
+            id: "R9G054",
+            title: Resources.ErrorMetricNameReuseTitle,
+            messageFormat: Resources.ErrorMetricNameReuseMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g054",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorInvalidMethodReturnType { get; } = new(
-            id: "R9MG0005",
-            title: MetricResources.ErrorInvalidMethodReturnTypeTitle,
-            messageFormat: MetricResources.ErrorInvalidMethodReturnTypeMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorInvalidMethodReturnType { get; } = new (
+            id: "R9G055",
+            title: Resources.ErrorInvalidMethodReturnTypeTitle,
+            messageFormat: Resources.ErrorInvalidMethodReturnTypeMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g055",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMissingMeter { get; } = new(
-            id: "R9MG0006",
-            title: MetricResources.ErrorMissingMeterTitle,
-            messageFormat: MetricResources.ErrorMissingMeterMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorMissingMeter { get; } = new (
+            id: "R9G056",
+            title: Resources.ErrorMissingMeterTitle,
+            messageFormat: Resources.ErrorMissingMeterMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g056",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorNotPartialMethod { get; } = new(
-            id: "R9MG0007",
-            title: MetricResources.ErrorNotPartialMethodTitle,
-            messageFormat: MetricResources.ErrorNotPartialMethodMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorNotPartialMethod { get; } = new (
+            id: "R9G057",
+            title: Resources.ErrorNotPartialMethodTitle,
+            messageFormat: Resources.ErrorNotPartialMethodMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g057",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMethodIsGeneric { get; } = new(
-            id: "R9MG0008",
-            title: MetricResources.ErrorMethodIsGenericTitle,
-            messageFormat: MetricResources.ErrorMethodIsGenericMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorMethodIsGeneric { get; } = new (
+            id: "R9G058",
+            title: Resources.ErrorMethodIsGenericTitle,
+            messageFormat: Resources.ErrorMethodIsGenericMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g058",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMethodHasBody { get; } = new(
-            id: "R9MG0009",
-            title: MetricResources.ErrorMethodHasBodyTitle,
-            messageFormat: MetricResources.ErrorMethodHasBodyMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorMethodHasBody { get; } = new (
+            id: "R9G059",
+            title: Resources.ErrorMethodHasBodyTitle,
+            messageFormat: Resources.ErrorMethodHasBodyMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g059",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMissingStaticDimension { get; } = new(
-            id: "R9MG0010",
-            title: MetricResources.ErrorMissingStaticDimensionParameterTitle,
-            messageFormat: MetricResources.ErrorMissingStaticDimensionParameterMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorInvalidDimensionNames { get; } = new (
+            id: "R9G060",
+            title: Resources.ErrorInvalidDimensionNamesMessage,
+            messageFormat: Resources.ErrorInvalidDimensionNamesTitle,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g060",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorMissingStaticDimensionParameter { get; } = new(
-            id: "R9MG0011",
-            title: MetricResources.ErrorMissingStaticDimensionTitle,
-            messageFormat: MetricResources.ErrorMissingStaticDimensionMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorConflictingDimension { get; } = new (
+            id: "R9G061",
+            title: Resources.ErrorConflictingDimensionMessage,
+            messageFormat: Resources.ErrorConflictingDimensionTitle,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g061",
             isEnabledByDefault: true);
 
-        public static DiagnosticDescriptor ErrorNotStaticMethod { get; } = new(
-            id: "R9MG0012",
-            title: MetricResources.ErrorNotStaticMethodTitle,
-            messageFormat: MetricResources.ErrorNotStaticMethodMessage,
-            category: "MetricGenerator",
+        public static DiagnosticDescriptor ErrorNotStaticMethod { get; } = new (
+            id: "R9G062",
+            title: Resources.ErrorNotStaticMethodTitle,
+            messageFormat: Resources.ErrorNotStaticMethodMessage,
+            category: _category,
             DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g062",
+            isEnabledByDefault: true);
+
+        public static DiagnosticDescriptor ErrorMismatchingStaticDimensionsCount { get; } = new (
+            id: "R9G063",
+            title: Resources.ErrorMismatchingStaticDimensionsCountMessage,
+            messageFormat: Resources.ErrorMismatchingStaticDimensionsCountTitle,
+            category: _category,
+            DiagnosticSeverity.Error,
+            helpLinkUri: "https://eng.ms/docs/experiences-devices/r9-sdk/docs/code-analysis-and-generation/errors/r9g063",
             isEnabledByDefault: true);
     }
 }
