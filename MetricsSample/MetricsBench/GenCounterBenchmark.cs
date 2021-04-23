@@ -42,14 +42,14 @@ namespace MetricsBench
         public void Add_NullDimension()
         {
             value1++;
-            _counter5DNullDim.Add(value1, _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
+            _counter5DNullDim.Add(value1, _valuesToFeed[0], _valuesToFeed[0], _valuesToFeed[0], _valuesToFeed[0], _valuesToFeed[0]);
         }
 
         [Benchmark]
         public void Add_NoDimensionChanges()
         {
             value1++;
-            _counter5DNullDim.Add(value1, _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
+            _counter5DNullDim.Add(value1, _valuesToFeed[0], _valuesToFeed[0], _valuesToFeed[0], _valuesToFeed[0], _valuesToFeed[0]);
         }
 
         [Benchmark]
@@ -57,7 +57,7 @@ namespace MetricsBench
         {
             // value2++;
 
-            _counter5D1Change.Add(value2, _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
+            _counter5D1Change.Add(value2, _valuesToFeed[0], _valuesToFeed[1], _valuesToFeed[2], _valuesToFeed[3], _valuesToFeed[value2 % 5]);
         }
 
         [Benchmark]
@@ -65,7 +65,7 @@ namespace MetricsBench
         {
             // value2++;
 
-            _counter5D3Change.Add(value2, _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
+            _counter5D3Change.Add(value2, _valuesToFeed[0], _valuesToFeed[1], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
         }
 
         [Benchmark]
@@ -73,8 +73,8 @@ namespace MetricsBench
         {
             // value2++;
             _counter10D3Change.Add(value2,
-                _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5],
-                _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
+                _valuesToFeed[0], _valuesToFeed[1], _valuesToFeed[2], _valuesToFeed[3], _valuesToFeed[4],
+                _valuesToFeed[5], _valuesToFeed[6], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
         }
 
         [Benchmark]
@@ -82,7 +82,7 @@ namespace MetricsBench
         {
             // value2++;
             _counter10D5Change.Add(value2,
-                _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5],
+                _valuesToFeed[0], _valuesToFeed[1], _valuesToFeed[2], _valuesToFeed[3], _valuesToFeed[4],
                 _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
         }
 
