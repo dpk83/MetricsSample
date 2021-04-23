@@ -15,11 +15,11 @@ namespace Microsoft.R9.Generators.Metric
             $"global::System.CodeDom.Compiler.GeneratedCodeAttribute(" +
             $"\"{typeof(Emitter).Assembly.GetName().Name}\"," +
             $"\"{typeof(Emitter).Assembly.GetName().Version}\")";
-        private readonly Stack<StringBuilder> _builders = new ();
+        private readonly Stack<StringBuilder> _builders = new();
 
         public string EmitGenevaMeter(IReadOnlyList<MetricInstrumentClass> metricInstrumentClasses, CancellationToken cancellationToken)
         {
-            Dictionary<string, List<MetricInstrumentClass>> metricInstrumentClassesDict = new ();
+            Dictionary<string, List<MetricInstrumentClass>> metricInstrumentClassesDict = new();
             foreach (var cl in metricInstrumentClasses)
             {
                 if (!metricInstrumentClassesDict.ContainsKey(cl.Namespace))
@@ -51,7 +51,7 @@ namespace Microsoft.R9.Generators.Metric
 
         public string EmitMetricInstruments(IReadOnlyList<MetricInstrumentClass> metricInstrumentClasses, CancellationToken cancellationToken)
         {
-            Dictionary<string, List<MetricInstrumentClass>> metricInstrumentClassesDict = new ();
+            Dictionary<string, List<MetricInstrumentClass>> metricInstrumentClassesDict = new();
             foreach (var cl in metricInstrumentClasses)
             {
                 if (!metricInstrumentClassesDict.ContainsKey(cl.Namespace))
@@ -79,12 +79,6 @@ namespace Microsoft.R9.Generators.Metric
             {
                 ReturnStringBuilder(sb);
             }
-        }
-
-        private static string GetDimensionsValueType(MetricInstrumentMethod metricInstrumentMethod)
-        {
-            int count = metricInstrumentMethod.StaticDimensionsKeys.Count + metricInstrumentMethod.DynamicDimensionsKeys.Count;
-            return $"global::Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions.DimensionValues{count}D";
         }
 
         private static string GetSanitizedParamName(string paramName)
@@ -123,7 +117,6 @@ namespace {nspace}
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S103:Lines should not be too long", Justification = "The line will be within limits in generated code")]
         private string GenMetricInstrumentFactoryByNamespace(string nspace, IReadOnlyList<MetricInstrumentClass> metricInstrumentClasses, CancellationToken cancellationToken)
         {
             var sb = GetStringBuilder();
@@ -136,14 +129,9 @@ namespace {nspace}
                 }
 
                 string str = $@"
-    public static partial class GeneratedCounterMetricFactory
+    public static partial class Metric
     {{
-        private static readonly global::Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions.MdmMetricFlags MdmFlags =
-            global::Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions.MdmMetricFlags.CumulativeMetricDefault |
-            global::Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions.MdmMetricFlags.IncludeDefaultDimensions;
-
-        private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, global::Microsoft.R9.Extensions.Meter.ICounterMetric<long>> _longCounterMetrics = new ();
-        private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, global::Microsoft.R9.Extensions.Meter.IValueRecorderMetric<long>> _longValueRecorderMetrics = new ();
+        private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, global::Microsoft.R9.Extensions.Meter.ICounterD> _longCounterMetrics = new ();
         {sb}
     }}
 ";
@@ -170,8 +158,6 @@ namespace {nspace}
             var sb = GetStringBuilder();
             try
             {
-                _ = sb.Append(GenCounterCreateMethods(metricInstrumentClass));
-
                 foreach (var metricInstrumentMethod in metricInstrumentClass.Methods)
                 {
                     _ = sb.Append(GenCounterClass(metricInstrumentMethod));
@@ -207,11 +193,9 @@ namespace {nspace}
         {
             var meterParam = metricInstrumentMethod.AllParameters[0];
 
-            if (metricInstrumentMethod.InstrumentType == InstrumentType.Counter)
-            {
-                return $@"
+            return $@"
         [{_generatedCodeAttribute}]
-        public static {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}(global::{meterParam.Type} {meterParam.Name}{GenStaticParameters(metricInstrumentMethod)})
+        public static partial {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}(global::{meterParam.Type} {meterParam.Name})
         {{
             string metricName = ""{metricInstrumentMethod.MetricName}"";
             if (_longCounterMetrics.TryGetValue(metricName, out var counterMetric))
@@ -219,240 +203,67 @@ namespace {nspace}
                 return (counterMetric as {metricInstrumentMethod.MetricName})!;
             }}
 
-            var genevaMeter = (meter as global::Microsoft.R9.Extensions.Meter.Geneva.GenevaMeter)!;
+            var metric = _longCounterMetrics.GetOrAdd(metricName, (key) => 
+                {{
+                    var counter = meter.CreateCounter(metricName{GenDimensionKeys(metricInstrumentMethod)});
+                    return new {metricInstrumentMethod.MetricName}(counter as Microsoft.R9.Extensions.Meter.ICounter{metricInstrumentMethod.Dimensions.Count}D);
+                }});
 
-            var metric = _longCounterMetrics.GetOrAdd(metricName, (key) => {{
-                var cumulativeMetric = genevaMeter.MdmMetricFactory.CreateUInt64CumulativeMetric(
-                                            MdmFlags,
-                                            genevaMeter.MonitoringAccount,
-                                            genevaMeter.MetricNamespace,
-                                            metricName
-                                            {GenStaticKeyNames(metricInstrumentMethod)}
-                                            {GenDynamicKeyNames(metricInstrumentMethod)});
-
-                return new {metricInstrumentMethod.MetricName}(cumulativeMetric{GenStaticParameters(metricInstrumentMethod, false)});
-            }});
-
-            return (metric as {metricInstrumentMethod.MetricName})!;
+            return metric as {metricInstrumentMethod.MetricName};
         }}
 ";
-            }
-            else
-            {
-                return $@"
-        [{_generatedCodeAttribute}]
-        public static {metricInstrumentMethod.MetricName} Create{metricInstrumentMethod.MetricName}({meterParam.Type} {meterParam.Name}{GenStaticParameters(metricInstrumentMethod)})
-        {{
-            string metricName = ""{metricInstrumentMethod.MetricName}"";
-            if (_longValueRecorderMetrics.TryGetValue(metricName, out var valueRecorderMetric))
-            {{
-                return (valueRecorderMetric as {metricInstrumentMethod.MetricName})!;
-            }}
-
-            var genevaMeter = (meter as global::Microsoft.R9.Extensions.Meter.Geneva.GenevaMeter)!;
-
-            var metric = _longValueRecorderMetrics.GetOrAdd(metricName, (key) => {{
-                var cumulativeMetric = genevaMeter.MdmMetricFactory.CreateUInt64CumulativeMetric(
-                                            MdmFlags,
-                                            genevaMeter.MonitoringAccount,
-                                            genevaMeter.MetricNamespace,
-                                            metricName
-                                            {GenStaticKeyNames(metricInstrumentMethod)}
-                                            {GenDynamicKeyNames(metricInstrumentMethod)});
-
-                return new {metricInstrumentMethod.MetricName}(cumulativeMetric{GenStaticParameters(metricInstrumentMethod, false)});
-            }});
-
-            return (metric as {metricInstrumentMethod.MetricName})!;
-        }}
-";
-            }
-        }
-
-        private string GenCounterCreateMethods(MetricInstrumentClass metricInstrumentClass)
-        {
-            var sb = GetStringBuilder();
-            try
-            {
-                foreach (var metricInstrumentMethod in metricInstrumentClass.Methods)
-                {
-                    _ = sb.Append(GenCounterMethod(metricInstrumentMethod));
-                }
-
-                return $@"
-    [{_generatedCodeAttribute}]
-    public static partial class {metricInstrumentClass.Name} {metricInstrumentClass.Constraints}
-    {{
-        {sb}
-    }}
-    ";
-            }
-            finally
-            {
-                ReturnStringBuilder(sb);
-            }
         }
 
         private string GenCounterClass(MetricInstrumentMethod metricInstrumentMethod)
         {
-            string interfaceName = (metricInstrumentMethod.InstrumentType == InstrumentType.Counter) ?
-                "global::Microsoft.R9.Extensions.Meter.ICounterMetric<long>" :
-                "global::Microsoft.R9.Extensions.Meter.IValueRecorderMetric<long>";
+            string counterInterfaceName = $"Microsoft.R9.Extensions.Meter.ICounter{metricInstrumentMethod.Dimensions.Count}D";
             return $@"
     [{_generatedCodeAttribute}]
-    public class {metricInstrumentMethod.MetricName} : {interfaceName}
+    public class {metricInstrumentMethod.MetricName} : Microsoft.R9.Extensions.Meter.ICounterD
     {{
-        private readonly string[] _staticValArray;
-        private {GetDimensionsValueType(metricInstrumentMethod)} _defaultDimensionValues;
-
-        internal global::Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions.IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod)}, ulong> CumulativeMetric {{ get; }}
-
-        public {metricInstrumentMethod.MetricName}
-            (global::Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions.IMdmCumulativeMetric<{GetDimensionsValueType(metricInstrumentMethod)}, ulong> cumulativeMetric 
-            {GenStaticParameters(metricInstrumentMethod)})
+        {counterInterfaceName} _counter;
+        public {metricInstrumentMethod.MetricName}({counterInterfaceName} counter)
         {{
-            CumulativeMetric = cumulativeMetric ?? throw new global::System.ArgumentNullException(nameof(cumulativeMetric));
-            _staticValArray = new string[{metricInstrumentMethod.StaticDimensionsKeys.Count}];
-            {GenConstructorBody(metricInstrumentMethod)}
+            _counter = counter;
         }}
         {GenClassMethods(metricInstrumentMethod)}
     }}
     ";
         }
 
-        private string GenCounterMethod(MetricInstrumentMethod metricInstrumentMethod)
-        {
-            var p = metricInstrumentMethod.AllParameters[0];
-            string meterArg = p.Name;
-
-            return $@"
-        [{_generatedCodeAttribute}]
-        public static partial {metricInstrumentMethod.InstrumentClassType} {metricInstrumentMethod.Name}({GenParameters(metricInstrumentMethod)})
-        {{
-            return GeneratedCounterMetricFactory.Create{metricInstrumentMethod.MetricName}({meterArg}{GenStaticParameters(metricInstrumentMethod, false)});
-        }}
-        ";
-        }
-
-        private string GenParameters(MetricInstrumentMethod metricInstrumentMethod)
+        private string GenDimensionKeys(MetricInstrumentMethod metricInstrumentMethod)
         {
             var sb = GetStringBuilder();
             try
             {
-                foreach (var p in metricInstrumentMethod.AllParameters)
+                foreach (var param in metricInstrumentMethod.Dimensions)
                 {
-                    if (p == metricInstrumentMethod.AllParameters[0])
+                    _ = sb.Append(@$", ""{param}""");
+                }
+
+                return sb.ToString();
+            }
+            finally
+            {
+                ReturnStringBuilder(sb);
+            }
+        }
+
+        private string GenDynamicParameters(MetricInstrumentMethod metricInstrumentMethod, bool includeType = true)
+        {
+            var sb = GetStringBuilder();
+            try
+            {
+                foreach (var dimension in metricInstrumentMethod.Dimensions)
+                {
+                    if (includeType)
                     {
-                        _ = sb.Append("global::");
+                        _ = sb.Append($", string {GetSanitizedParamName(dimension)}");
                     }
                     else
                     {
-                        _ = sb.Append(", ");
+                        _ = sb.Append($", {GetSanitizedParamName(dimension)}");
                     }
-
-                    _ = sb.Append($"{p.Type} {p.Name}");
-                }
-
-                return sb.ToString();
-            }
-            finally
-            {
-                ReturnStringBuilder(sb);
-            }
-        }
-
-        private string GenStaticParameters(MetricInstrumentMethod metricInstrumentMethod, bool includeType = true)
-        {
-            var sb = GetStringBuilder();
-            try
-            {
-                foreach (var dimensionParam in metricInstrumentMethod.StaticDimensionParameters)
-                {
-                    _ = sb.Append(", ");
-
-                    if (includeType)
-                    {
-                        _ = sb.Append($"string ");
-                    }
-
-                    _ = sb.Append(dimensionParam.Name);
-                }
-
-                return sb.ToString();
-            }
-            finally
-            {
-                ReturnStringBuilder(sb);
-            }
-        }
-
-        private string GenDynamicParameters(MetricInstrumentMethod metricInstrumentMethod)
-        {
-            var sb = GetStringBuilder();
-            try
-            {
-                foreach (var dimension in metricInstrumentMethod.DynamicDimensionsKeys)
-                {
-                    _ = sb.Append($", string {GetSanitizedParamName(dimension)}");
-                }
-
-                return sb.ToString();
-            }
-            finally
-            {
-                ReturnStringBuilder(sb);
-            }
-        }
-
-        private string GenStaticKeyNames(MetricInstrumentMethod metricInstrumentMethod)
-        {
-            var sb = GetStringBuilder();
-            try
-            {
-                foreach (var dimension in metricInstrumentMethod.StaticDimensionsKeys)
-                {
-                    _ = sb.Append(", ");
-                    _ = sb.Append(@$"""{dimension}""");
-                }
-
-                return sb.ToString();
-            }
-            finally
-            {
-                ReturnStringBuilder(sb);
-            }
-        }
-
-        private string GenDynamicKeyNames(MetricInstrumentMethod metricInstrumentMethod)
-        {
-            var sb = GetStringBuilder();
-            try
-            {
-                foreach (var dimension in metricInstrumentMethod.DynamicDimensionsKeys)
-                {
-                    _ = sb.Append(@$", ""{dimension}""");
-                }
-
-                return sb.ToString();
-            }
-            finally
-            {
-                ReturnStringBuilder(sb);
-            }
-        }
-
-        private string GenConstructorBody(MetricInstrumentMethod metricInstrumentMethod)
-        {
-            var sb = GetStringBuilder();
-            try
-            {
-                int index = 0;
-                foreach (var staticDimensionParam in metricInstrumentMethod.StaticDimensionParameters)
-                {
-                    _ = sb.Append($@"
-            _staticValArray[{index}] = {staticDimensionParam.Name};");
-
-                    index++;
                 }
 
                 return sb.ToString();
@@ -469,17 +280,7 @@ namespace {nspace}
             try
             {
                 int i = 0;
-                for (; i < metricInstrumentMethod.StaticDimensionsKeys.Count; i++)
-                {
-                    if (i > 0)
-                    {
-                        _ = sb.Append(", ");
-                    }
-
-                    _ = sb.Append($"_staticValArray[{i}]");
-                }
-
-                foreach (var dimension in metricInstrumentMethod.DynamicDimensionsKeys)
+                foreach (var dimension in metricInstrumentMethod.Dimensions)
                 {
                     if (i > 0)
                     {
@@ -492,32 +293,11 @@ namespace {nspace}
 
                 string methodName = metricInstrumentMethod.InstrumentType == InstrumentType.Counter ? "Add" : "Record";
 
-                string commulativeOperation = metricInstrumentMethod.InstrumentType == InstrumentType.Counter ?
-                    $@"_ = value > 0
-                        ? CumulativeMetric.IncrementBy((ulong)value, _defaultDimensionValues)
-                        : CumulativeMetric.DecrementBy((ulong)(value * -1), _defaultDimensionValues);
-                    " :
-                    $@"_ = CumulativeMetric.Set((ulong)value, _defaultDimensionValues);
-                    ";
-
-                string str = $@"
+                return $@"
         public void {methodName}(long value{GenDynamicParameters(metricInstrumentMethod)})
         {{
-            if (value != 0)
-            {{
-                _defaultDimensionValues = global::Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions.DimensionValues.Create({sb});
-
-                {commulativeOperation}
-            }}
+            _counter.{methodName}(value{GenDynamicParameters(metricInstrumentMethod, false)});
         }}";
-
-                return $@"{str}
-
-        public void {methodName}(long value, global::System.Collections.Generic.IList<(string key, string value)>? dimensions)
-        {{
-            throw new global::System.NotImplementedException();
-        }}
-        ";
             }
             finally
             {

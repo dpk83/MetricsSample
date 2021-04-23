@@ -11,8 +11,7 @@ namespace MetricsSample
         }
 
         static void Test(string[] args)
-        { 
-        
+        {
         }
 
         static void Test1(string[] args)

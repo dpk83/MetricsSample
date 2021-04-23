@@ -1,5 +1,5 @@
 ﻿// © Microsoft Corporation. All rights reserved.
-
+#if OLD_EMITTER
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,8 +13,8 @@ namespace Microsoft.R9.Generators.Metric
 
         private readonly string _generatedCodeAttribute =
             $"global::System.CodeDom.Compiler.GeneratedCodeAttribute(" +
-            $"\"{typeof(Emitter).Assembly.GetName().Name}\"," +
-            $"\"{typeof(Emitter).Assembly.GetName().Version}\")";
+            $"\"{typeof(Emitter1).Assembly.GetName().Name}\"," +
+            $"\"{typeof(Emitter1).Assembly.GetName().Version}\")";
         private readonly Stack<StringBuilder> _builders = new();
 
         public string EmitGenevaMeter(IReadOnlyList<MetricInstrumentClass> metricInstrumentClasses, CancellationToken cancellationToken)
@@ -506,3 +506,4 @@ namespace {nspace}
         }
     }
 }
+#endif

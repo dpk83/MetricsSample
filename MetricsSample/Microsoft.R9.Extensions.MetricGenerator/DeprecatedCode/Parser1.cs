@@ -1,5 +1,5 @@
 ﻿// © Microsoft Corporation. All rights reserved.
-
+#if OLD_PARSER
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,7 +108,8 @@ namespace Microsoft.R9.Generators.Metric
                                             Name = method.Identifier.ToString(),
                                             MetricName = metricName,
                                             InstrumentType = isCounterAttribute ? InstrumentType.Counter : InstrumentType.ValueRecorder,
-                                            Dimensions = GetDimensionsList(dynamicDim),
+                                            StaticDimensionsKeys = GetDimensionsList(staticDim),
+                                            DynamicDimensionsKeys = GetDimensionsList(dynamicDim),
                                             IsExtensionMethod = methodSymbol.IsExtensionMethod,
                                             Modifiers = method.Modifiers.ToString(),
                                             InstrumentClassType = semanticModel.GetTypeInfo(method.ReturnType!).Type!.ToDisplayString()
@@ -214,7 +215,7 @@ namespace Microsoft.R9.Generators.Metric
                                                 break;
                                             }
 
-                                            if (metricInstrumentMethod.Dimensions.Contains(paramName))
+                                            if (metricInstrumentMethod.DynamicDimensionsKeys.Contains(paramName))
                                             {
                                                 Diag(DiagDescriptors.ErrorConflictingDimension, parameter.Identifier.GetLocation());
                                                 keepMethod = false;
@@ -241,6 +242,11 @@ namespace Microsoft.R9.Generators.Metric
 
                                             metricInstrumentMethod.AllParameters.Add(meterParameter);
 
+                                            if (meterParameter.IsRegular)
+                                            {
+                                                metricInstrumentMethod.StaticDimensionParameters.Add(meterParameter);
+                                            }
+
                                             if (keepMethod)
                                             {
                                                 if (!foundMeter)
@@ -249,6 +255,12 @@ namespace Microsoft.R9.Generators.Metric
                                                     keepMethod = false;
                                                 }
                                             }
+                                        }
+
+                                        if (metricInstrumentMethod.StaticDimensionParameters.Count != metricInstrumentMethod.StaticDimensionsKeys.Count)
+                                        {
+                                            Diag(DiagDescriptors.ErrorMismatchingStaticDimensionsCount, method.GetLocation());
+                                            keepMethod = false;
                                         }
 
                                         if (metricInstrumentClass == null)
@@ -309,7 +321,15 @@ namespace Microsoft.R9.Generators.Metric
 
         private static bool AreDimensionKeyNamesValid(MetricInstrumentMethod metricInstrumentMethod)
         {
-            foreach (var dynDim in metricInstrumentMethod.Dimensions)
+            foreach (var staticDim in metricInstrumentMethod.StaticDimensionsKeys)
+            {
+                if (!_regexDimensionNames.IsMatch(staticDim))
+                {
+                    return false;
+                }
+            }
+
+            foreach (var dynDim in metricInstrumentMethod.DynamicDimensionsKeys)
             {
                 if (!_regexDimensionNames.IsMatch(dynDim))
                 {
@@ -353,7 +373,7 @@ namespace Microsoft.R9.Generators.Metric
                             case "StaticDimensions":
                                 staticDim = (string)(sm.GetConstantValue(arg.Expression, _cancellationToken).Value ?? string.Empty);
                                 break;
-                            case "Dimensions":
+                            case "DynamicDimensions":
                                 dynamicDim = (string)(sm.GetConstantValue(arg.Expression, _cancellationToken).Value ?? string.Empty);
                                 break;
                         }
@@ -385,7 +405,9 @@ namespace Microsoft.R9.Generators.Metric
     internal class MetricInstrumentMethod
     {
         public readonly List<MetricInstrumentParameter> AllParameters = new ();
-        public HashSet<string> Dimensions = new ();
+        public readonly List<MetricInstrumentParameter> StaticDimensionParameters = new ();
+        public HashSet<string> StaticDimensionsKeys = new ();
+        public HashSet<string> DynamicDimensionsKeys = new ();
         public string? Name;
         public string? MetricName;
         public bool IsExtensionMethod;
@@ -408,3 +430,4 @@ namespace Microsoft.R9.Generators.Metric
         ValueRecorder = 1
     }
 }
+#endif

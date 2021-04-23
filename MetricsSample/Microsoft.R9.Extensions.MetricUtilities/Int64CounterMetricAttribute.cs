@@ -27,13 +27,8 @@ namespace Microsoft.R9.Extensions.Meter
     public sealed class Int64CounterMetricAttribute : Attribute
     {
         /// <summary>
-        /// Gets or sets a comma-separated list of dimension keys whose values stays same for the lifetime of the counter.
-        /// </summary>
-        public string? StaticDimensions { get; set; }
-
-        /// <summary>
         /// Gets or sets a comma-separated list of dimension keys that are dynamic i.e., their values change during counter lifetime.
         /// </summary>
-        public string? DynamicDimensions { get; set; }
+        public string? Dimensions { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace MetricsBench
     {
         static void Main(string[] args)
         {
-            //Test();
+            // Test();
             // Test1();
              // Test2();
             RunBenchmark(args);
