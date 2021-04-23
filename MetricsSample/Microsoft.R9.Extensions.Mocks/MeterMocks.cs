@@ -1,6 +1,7 @@
 ﻿using Microsoft.Cloud.InstrumentationFramework.Metrics.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Microsoft.R9.Extensions.Meter
 {
@@ -18,66 +19,105 @@ namespace Microsoft.R9.Extensions.Meter
 
     public interface IMeter
     {
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3, string k4);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3, string k4, string k5);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3, string k4, string k5, string k6);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3, string k4, string k5, string k6, string k7);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3, string k4, string k5, string k6, string k7, string k8);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3, string k4, string k5, string k6, string k7, string k8, string k9);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
         ICounterD CreateCounter(string name, string k1, string k2, string k3, string k4, string k5, string k6, string k7, string k8, string k9, string k10);
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounterD
     {
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter0D : ICounterD
     {
         public void Add(long value);
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter1D : ICounterD
     {
         public void Add(long value, string value1);
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter2D : ICounterD
     {
         public void Add(long value, string value1, string value2);
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter3D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3);
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter4D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3, string value4);
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter5D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3, string value4, string value5);
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter6D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3, string value4, string value5, string value6);
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter7D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3, string value4, string value5, string value6, string value7);
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter8D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3, string value4, string value5, string value6, string value7, string value8);
     }
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter9D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3, string value4, string value5, string value6, string value7, string value8, string value9);
     }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public interface ICounter10D : ICounterD
     {
         public void Add(long value, string value1, string value2, string value3, string value4, string value5, string value6, string value7, string value8, string value9, string value10);
