@@ -11,6 +11,7 @@ namespace MetricsBench
     {
         static void Main(string[] args)
         {
+            //Test();
             // Test1();
              // Test2();
             RunBenchmark(args);
@@ -20,11 +21,23 @@ namespace MetricsBench
         {
             var dontRequireSlnToRunBenchmarks = ManualConfig
                 .Create(DefaultConfig.Instance)
-                // .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance));
-                // .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.DontLogOutput));
-                .AddJob(Job.Default.WithRuntime(CoreRuntime.Core50));
+                //.AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance));
+                .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.DontLogOutput));
+                //.AddJob(Job.Default.WithRuntime(CoreRuntime.Core50));
 
             BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args, dontRequireSlnToRunBenchmarks);
+        }
+
+        static void Test()
+        {
+            var metric = new GenCounterBenchmark_3();
+            metric.Add_NullDimension();
+            metric.Add_NoDimensionChanges();
+            metric.Add_Update1DimValueInEachCall_5DCounter();
+            metric.Add_Update3DimValueInEachCall_5DCounter();
+            metric.Add_Update3DimValueInEachCall_10DCounter();
+            metric.Add_Update5DimValueInEachCall_10DCounter();
+            metric.Add_Update10DimValueInEachCall_10DCounter();
         }
 
         static void Test1()

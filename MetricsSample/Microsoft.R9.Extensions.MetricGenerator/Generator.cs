@@ -33,7 +33,8 @@ namespace Microsoft.R9.Generators.Metric
 
             if (counterClasses.Count > 0)
             {
-                var emitter = new Emitter();
+                // var emitter = new Emitter();
+                var emitter = new Emitter2();
 
                 var genevaMeter = emitter.EmitGenevaMeter(counterClasses, context.CancellationToken);
                 context.AddSource("GeneratedGenevaMeter", SourceText.From(genevaMeter, Encoding.UTF8));

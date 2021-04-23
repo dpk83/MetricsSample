@@ -21,10 +21,10 @@ namespace MetricsBench
         private Counter10D3Change _counter10D3Change;
         private Counter10D5Change _counter10D5Change;
         private Counter10D10Change _counter10D10Change;
-        private string[] _valuesToFeed = { "feed1", "feed2", "feed3", "feed4", "feed5" };
+        private string[] _valuesToFeed = { "feed1", "feed2", "feed3", "feed4", "feed5", "feed6" };
 
-        static int value1 = 0;
-        static int value2 = 0;
+        static long value1 = 0;
+        static long value2 = 0;
 
         public GenCounterBenchmark_3()
         {
@@ -55,7 +55,7 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update1DimValueInEachCall_5DCounter()
         {
-            value2++;
+            // value2++;
 
             _counter5D1Change.Add(value2, _valuesToFeed[value2 % 5]);
         }
@@ -63,7 +63,7 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update3DimValueInEachCall_5DCounter()
         {
-            value2++;
+            // value2++;
 
             _counter5D3Change.Add(value2, _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
         }
@@ -71,21 +71,21 @@ namespace MetricsBench
         [Benchmark]
         public void Add_Update3DimValueInEachCall_10DCounter()
         {
-            value2++;
+            // value2++;
             _counter10D3Change.Add(value2, _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
         }
 
         [Benchmark]
         public void Add_Update5DimValueInEachCall_10DCounter()
         {
-            value2++;
+            // value2++;
             _counter10D5Change.Add(value2, _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5]);
         }
 
         [Benchmark]
         public void Add_Update10DimValueInEachCall_10DCounter()
         {
-            value2++;
+            // value2++;
 
             _counter10D10Change.Add(value2,
                 _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5], _valuesToFeed[value2 % 5],
